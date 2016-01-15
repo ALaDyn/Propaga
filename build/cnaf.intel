@@ -1,0 +1,9 @@
+#! /bin/bash
+
+module load compilers/gcc-4.8.2
+module load compilers/ips-xe-2013-sp1
+module load compilers/intel-mpi
+
+make intel
+#make openmp-intel
+
