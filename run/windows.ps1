@@ -1,15 +1,15 @@
 $filein         = "distribuzione.ppg"
+$filein         = "input.json"
 $ncpu           = 4
 #############################
-mpirun -np $ncpu .\Propaga.exe -f $filein
-#####
+$CONVERTER="%USERPROFILE%\bin\converter.exe"
+$GNUPLOT="C:\Program Files\gnuplot\bin\gnuplot.exe"
+$MPIRUN="C:\Program Files\Microsoft MPI\Bin\mpiexec.exe"
+
+Start-Process -FilePath $MPIRUN -ArgumentList "-n $ncpu Propaga.exe -f $filein -par $fileconf"
 
 #copy from input.json
 $NSTEPS="0020000"
-
-$CONVERTER="%USERPROFILE%\bin\converter.exe"
-$GNUPLOT="C:\Program Files\gnuplot\bin\gnuplot.exe"
-
 $EMIN="0.00"
 $EMAX="50.0"
 $NBIN_ENERGY=100
@@ -51,32 +51,33 @@ $PZ_COL=6
 $ID_PARTICLE_COL=7
 
 
-
-$CONVERTER 1 29979245800.0 "$MODE_ANGLE_AND_ENERGY" test."$NSTEPS".pulito.ppg "$PX_COL" "$PY_COL" "$PZ_COL" "$ID_PARTICLE_COL" "$WEIGHT_COL_DISTR_FILE"
-mv conv.test."$NSTEPS".pulito.ppg test."$NSTEPS".ENAN.ppg
+Start-Process -FilePath $CONVERTER -ArgumentList "1 1 ${MODE_CLEAN} test.${NSTEPS}.ppg ${STATUS_PARTICLE_COL}"
+mv "conv.test.${NSTEPS}.ppg" "test.${NSTEPS}.pulito.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList "1 29979245800.0 ${MODE_ANGLE_AND_ENERGY} test.${NSTEPS}.pulito.ppg ${PX_COL} ${PY_COL} ${PZ_COL} ${ID_PARTICLE_COL} ${WEIGHT_COL_DISTR_FILE}"
+mv "conv.test.${NSTEPS}.pulito.ppg" "test.${NSTEPS}.ENAN.ppg"
+####
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN1D} test.${NSTEPS}.ENAN.ppg ${ENERGY_COL} ${NBIN_ENERGY} ${EMIN} ${EMAX} ${WEIGHT_COL_ENAN_FILE}"
+mv "conv.test.${NSTEPS}.ENAN.ppg" "test.finalENERGY.binned.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN1D} test.${NSTEPS}.ENAN.ppg ${ANGLE_COL} ${NBIN_ANGLE} ${THETAMIN} ${THETAMAX} ${WEIGHT_COL_ENAN_FILE}"
+mv "conv.test.${NSTEPS}.ENAN.ppg" "test.finalANGLE.binned.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN1D} test.${NSTEPS}.pulito.ppg ${X_COL} ${NBIN_X} ${XMIN} ${XMAX} ${WEIGHT_COL_DISTR_FILE}"
+mv "conv.test.${NSTEPS}.pulito.ppg" "test.finalPOSITION.binned.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN2D} test.${NSTEPS}.ENAN.ppg ${ENERGY_COL} ${NBIN_ENERGY} ${EMIN} ${EMAX} ${ANGLE_COL} ${NBIN_ANGLE} ${THETAMIN} ${THETAMAX} ${WEIGHT_COL_ENAN_FILE}"
+mv "conv.test.${NSTEPS}.ENAN.ppg" "test.finalHEATMAP.binned.ppg"
 #####
-$CONVERTER 1 1 "$MODE_BIN1D" test."$NSTEPS".ENAN.ppg "$ENERGY_COL" "$NBIN_ENERGY" "$EMIN" "$EMAX" "$WEIGHT_COL_ENAN_FILE"
-mv conv.test."$NSTEPS".ENAN.ppg test.finalENERGY.binned.ppg
-$CONVERTER 1 1 "$MODE_BIN1D" test."$NSTEPS".ENAN.ppg "$ANGLE_COL" "$NBIN_ANGLE" "$THETAMIN" "$THETAMAX" "$WEIGHT_COL_ENAN_FILE"
-mv conv.test."$NSTEPS".ENAN.ppg test.finalANGLE.binned.ppg
-$CONVERTER 1 1 "$MODE_BIN1D" test."$NSTEPS".pulito.ppg "$X_COL" "$NBIN_X" "$XMIN" "$XMAX" "$WEIGHT_COL_DISTR_FILE"
-mv conv.test."$NSTEPS".pulito.ppg test.finalPOSITION.binned.ppg
-$CONVERTER 1 1 "$MODE_BIN2D" test."$NSTEPS".ENAN.ppg "$ENERGY_COL" "$NBIN_ENERGY" "$EMIN" "$EMAX" "$ANGLE_COL" "$NBIN_ANGLE" "$THETAMIN" "$THETAMAX" "$WEIGHT_COL_ENAN_FILE"
-mv conv.test."$NSTEPS".ENAN.ppg test.finalHEATMAP.binned.ppg
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_CLEAN} test.0000000.ppg ${STATUS_PARTICLE_COL}"
+mv "conv.test.0000000.ppg" "test.0000000.pulito.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 29979245800.0 ${MODE_ANGLE_AND_ENERGY} test.0000000.pulito.ppg ${PX_COL} ${PY_COL} ${PZ_COL} ${ID_PARTICLE_COL} ${WEIGHT_COL_DISTR_FILE}"
+mv "conv.test.0000000.pulito.ppg" "test.0000000.ENAN.ppg"
 #####
-$CONVERTER 1 1 "$MODE_CLEAN" test.0000000.ppg "$STATUS_PARTICLE_COL"
-mv conv.test.0000000.ppg test.0000000.pulito.ppg
-$CONVERTER 1 29979245800.0 "$MODE_ANGLE_AND_ENERGY" test.0000000.pulito.ppg "$PX_COL" "$PY_COL" "$PZ_COL" "$ID_PARTICLE_COL" "$WEIGHT_COL_DISTR_FILE"
-mv conv.test.0000000.pulito.ppg test.0000000.ENAN.ppg
-#####
-$CONVERTER 1 1 "$MODE_BIN1D" test.0000000.ENAN.ppg "$ENERGY_COL" "$NBIN_ENERGY" "$EMIN" "$EMAX" "$WEIGHT_COL_ENAN_FILE"
-mv conv.test.0000000.ENAN.ppg test.initialENERGY.binned.ppg
-$CONVERTER 1 1 "$MODE_BIN1D" test.0000000.ENAN.ppg "$ANGLE_COL" "$NBIN_ANGLE" "$THETAMIN" "$THETAMAX" "$WEIGHT_COL_ENAN_FILE"
-mv conv.test.0000000.ENAN.ppg test.initialANGLE.binned.ppg
-$CONVERTER 1 1 "$MODE_BIN1D" test.0000000.pulito.ppg "$X_COL" "$NBIN_X" "$XMIN" "$XMAX" "$WEIGHT_COL_DISTR_FILE"
-mv conv.test.0000000.pulito.ppg test.initialPOSITION.binned.ppg
-$CONVERTER 1 1 "$MODE_BIN2D" test.0000000.ENAN.ppg "$ENERGY_COL" "$NBIN_ENERGY" "$EMIN" "$EMAX" "$ANGLE_COL" "$NBIN_ANGLE" "$THETAMIN" "$THETAMAX" "$WEIGHT_COL_ENAN_FILE"
-mv conv.test.0000000.ENAN.ppg test.initialHEATMAP.binned.ppg
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN1D} test.0000000.ENAN.ppg ${ENERGY_COL} ${NBIN_ENERGY} ${EMIN} ${EMAX} ${WEIGHT_COL_ENAN_FILE}"
+mv "conv.test.0000000.ENAN.ppg" "test.initialENERGY.binned.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN1D} test.0000000.ENAN.ppg ${ANGLE_COL} ${NBIN_ANGLE} ${THETAMIN} ${THETAMAX} ${WEIGHT_COL_ENAN_FILE}"
+mv "conv.test.0000000.ENAN.ppg" "test.initialANGLE.binned.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN1D} test.0000000.pulito.ppg ${X_COL} ${NBIN_X} ${XMIN} ${XMAX} ${WEIGHT_COL_DISTR_FILE}"
+mv "conv.test.0000000.pulito.ppg" "test.initialPOSITION.binned.ppg"
+Start-Process -FilePath $CONVERTER -ArgumentList  "1 1 ${MODE_BIN2D} test.0000000.ENAN.ppg ${ENERGY_COL} ${NBIN_ENERGY} ${EMIN} ${EMAX} ${ANGLE_COL} ${NBIN_ANGLE} ${THETAMIN} ${THETAMAX} ${WEIGHT_COL_ENAN_FILE}"
+mv "conv.test.0000000.ENAN.ppg" "test.initialHEATMAP.binned.ppg"
 #####
 $GNUPLOT_FILE_EN="spettriEnergia.plt"
 Write-Host "#!/gnuplot\n" >> "$GNUPLOT_FILE_EN"
@@ -163,7 +164,7 @@ Write-Host "FILE_IN_1='test.finalHEATMAP.binned.ppg' \n" >> "$GNUPLOT_FILE_HEATM
 Write-Host "FILE_OUT='heatmap."$IMAGE_TYPE"' \n" >> "$GNUPLOT_FILE_HEATMAP"
 Write-Host "set terminal "$IMAGE_TERMINAL" truecolor enhanced size "$SIZEX","$SIZEY" \n" >> "$GNUPLOT_FILE_HEATMAP"
 Write-Host "set output FILE_OUT \n" >> "$GNUPLOT_FILE_HEATMAP"
-Write-Host "set title 'dN/(dEd{/Symbol W}) (MeV^{-1" mrad^{-1")' \n" >> "$GNUPLOT_FILE_HEATMAP"
+Write-Host "set title 'dN/(dEd{/Symbol W}) (MeV^{-1} mrad^{-1})' \n" >> "$GNUPLOT_FILE_HEATMAP"
 Write-Host "set xlabel 'E (MeV)' \n" >> "$GNUPLOT_FILE_HEATMAP"
 Write-Host "set ylabel '{/Symbol q} (mrad)' \n" >> "$GNUPLOT_FILE_HEATMAP"
 Write-Host "set xrange[%s:%s]\n" "$EMIN" "$EMAX" >> "$GNUPLOT_FILE_HEATMAP"
@@ -186,12 +187,12 @@ Write-Host "set xrange[%s:%s]\n" "$EMIN" "$EMAX" >> "$GNUPLOT_FILE_ENAN"
 Write-Host "set yrange[%s:%s]\n" "$THETAMIN" "$THETAMAX" >> "$GNUPLOT_FILE_ENAN"
 Write-Host "plot FILE_IN_1 u "$ENERGY_COL":"$ANGLE_COL" w points ps 0.5 lc rgb 'blue' \n" >> "$GNUPLOT_FILE_ENAN"
 #######
-$GNUPLOT "$GNUPLOT_FILE_ENAN"
-$GNUPLOT "$GNUPLOT_FILE_EMITT"
-$GNUPLOT "$GNUPLOT_FILE_SIGMA"
-$GNUPLOT "$GNUPLOT_FILE_AN"
-$GNUPLOT "$GNUPLOT_FILE_EN"
-$GNUPLOT "$GNUPLOT_FILE_POS"
-$GNUPLOT "$GNUPLOT_FILE_HEATMAP"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_ENAN"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_EMITT"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_SIGMA"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_AN"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_EN"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_POS"
+Start-Process -FilePath $GNUPLOT -ArgumentList "$GNUPLOT_FILE_HEATMAP"
 
 
