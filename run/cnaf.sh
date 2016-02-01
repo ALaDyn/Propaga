@@ -7,6 +7,7 @@ RESTART_STEP=0
 TRACK_PARTICLES=false
 NUMBER_OF_TRACKED_PARTICLES=10
 DISTRIB_FILE="distribuzione.ppg"
+CONFIG_FILE="parametri.json"
 
 USE_GCC=true
 #USE_GCC=false
@@ -44,6 +45,7 @@ else
 fi
 echo "module load compilers/gcc-4.8.2" >> $job
 echo "ln -s ${DISTRIB_FILE} test.initialbunch.ppg" >> $job
+echo "ln -s ${CONFIG_FILE} input.json" >> $job
 
 if [ "$RESTART" = true ]
 then

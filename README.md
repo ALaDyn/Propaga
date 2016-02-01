@@ -1,5 +1,5 @@
 Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
-*Uses jsoncons library (https://github.com/danielaparker/jsoncons)*
+*Uses [jsoncons library](https://github.com/danielaparker/jsoncons)*
 
 `Propaga` is a C++ code developed by the Physics of Complex System group, inside the Physics and Astronomy Department at the Bologna University, to study the three dimensional propagation of a particle bunch along a transfer line, composed by many different lattice elements.  
 You can build it using the makefile or the Visual Studio 2015 solution. In the latter case, please install MS-MPI before trying to build.  
@@ -8,7 +8,7 @@ In order to work, beside the executable, you should have at least two other impo
 + use `-par` to define the name of the json file
 + use `-f` to define the name of the phase-space distribution particle file
 
-There are other some useful command line parameters you can give to the executable:
+There are other useful command line parameters that you can give to the executable:
 
 + use `-restart xxx` to tell the program that we want to restart from time-step=xxx (of course the dump must be present in the folder)
 + use `-LASTSLOWEST` to tell the program that the last particle in the input file is the reference particle, or to say, the slowest particle that you keep as a reference to wait for when deciding how to terminate the simulation. This particle, in this case, will be discarded in the bunch parameters calculations
