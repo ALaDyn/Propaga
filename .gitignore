@@ -189,3 +189,10 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 *.exe
+cineca.gnu
+cineca.xl
+cnaf.debug.gnu
+cnaf.gnu
+cnaf.intel
+
+
