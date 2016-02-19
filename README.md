@@ -1,3 +1,5 @@
+[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
+
 Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
 *Uses [jsoncons library](https://github.com/danielaparker/jsoncons)*
 
