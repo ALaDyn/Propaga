@@ -1,9 +1,12 @@
-[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
+[![Build Status Master](https://travis-ci.org/cenit/Propaga.png?branch=master)](https://travis-ci.org/cenit/Propaga "master")
 
 Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
 *Uses [jsoncons library](https://github.com/danielaparker/jsoncons)*
 
 `Propaga` is a C++ code developed by the Physics of Complex System group, inside the Physics and Astronomy Department at the Bologna University, to study the three dimensional propagation of a particle bunch along a transfer line, composed by many different lattice elements.  
+If you want to use it, you're kindly requested to inform the authors and cite this Zenodo DOI:
+[![DOI](https://zenodo.org/badge/4711/ALaDyn/Propaga.svg)](https://zenodo.org/badge/latestdoi/4711/ALaDyn/Propaga)
+
 You can build it using the makefile or the Visual Studio 2015 solution. In the latter case, please install MS-MPI before trying to build.  
 In order to work, beside the executable, you should have at least two other important files: a json parameter file (default: input.json) and a phase-space distribution particle file (default test.initialbunch.ppg). Of course these default names can be varied, providing the correct path to Propaga through the following flags:
 
