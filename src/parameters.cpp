@@ -80,7 +80,8 @@ void Parameters::enable_mpi(int argc, char ** argv) {
 void Parameters::warm_up() {
   log_file.open("LOG.ppg", std::ios::app);
   log_file << "\nPropaga v" << major_version << "." << minor_version << "." << fix_release << "\nRelease date: " << release_date << "\nLatest change: " << latest_commit << std::endl;
-  log_file << "MPI Size: " << MPI_Size << std::endl << "MPI Rank: " << MPI_Rank << std::endl;
+  log_file << "MPI Size: " << MPI_Size << std::endl;
+  //log_file << "MPI Rank: " << MPI_Rank << std::endl;
 }
 
 
@@ -131,7 +132,12 @@ void Parameters::write_run_parameters() {
 
 
 void Parameters::parse_json_file() {
-  parameters = jsoncons::json::parse_file(input_parameters_filename);
+  try {
+    parameters = jsoncons::json::parse_file(input_parameters_filename);
+  }
+  catch (std::exception &e) {
+    log_file << e.what() << std::endl;
+  }
   jsoncons::json empty_json;
   jsoncons::json& json_lattice_elements = parameters.has_member("Magnetic_elements") ? parameters["Magnetic_elements"] : empty_json;
 
@@ -223,7 +229,7 @@ void Parameters::read_particles_per_cpu() {
       if (In_dist.eof()) break;
       contarighe++;
     } while (!In_dist.eof());
-    // riportiamo lo stream di lettura all'inizio, ora che sappiamo quante righe ha (questo risultato � stato molto dispendioso, sarebbe meglio passare a file binari)
+    // riportiamo lo stream di lettura all'inizio, ora che sappiamo quante righe ha (questo risultato e' stato molto dispendioso, sarebbe meglio passare a file binari)
     In_dist.clear();
     In_dist.seekg(0, std::ios::beg);
 

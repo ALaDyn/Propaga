@@ -62,7 +62,7 @@ double * Lattice::get_pointer()
   return www;
 }
 
-/* il metodo read_file_new esegue la lettura delle particelle dal file di distribuzione in input */
+/* il metodo read_file esegue la lettura delle particelle dal file di distribuzione in input */
 void Lattice::read_file(std::ifstream &In, double& wtot, int tot_particles_up_to_this_rank, int contacolonne, int*& part_per_cpu, int MPI_Rank, int MPI_Size)
 {
   MPI_Status status;

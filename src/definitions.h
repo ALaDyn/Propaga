@@ -24,9 +24,9 @@
 
 #define major_version 1
 #define minor_version 0
-#define fix_release   0
-#define release_date  "January 15, 2016"
-#define latest_commit "v1.0.0_public"
+#define fix_release   1
+#define release_date  "June 14, 2016"
+#define latest_commit "try_catch the json input file parsing"
 
 #define _CRT_SECURE_NO_WARNINGS
 
