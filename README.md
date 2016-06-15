@@ -28,7 +28,7 @@ There are other useful command line parameters that you can give to the executab
 The input parameters for the simulation are driven by a single json file.
 
 + `emin`, `emax`: if you define a negative value, no minimum/maximum energy is defined. Particle outside this energy band will be flagged as lost, but their evolution will proceed anyway (being lost means that they are excluded from bunch properties calculations, but not from full dumps, where in the nineth column their flag will be set to `1`)
-+ `dt`: time interval between the integrator steps (for now just a 4th order Runge-Kutta is implemented)
++ `dt`: interval (in units of ct [cm]) between the 4th order Runge-Kutta integrator steps
 + `steps_between_dumps`: number of steps between full data dumps (if 0, no dumps will be done)
 + `steps_between_diags`: number of steps between diagnostics records
 + `Magnetic_elements`: an array of json elements defining the lattice characteristics
