@@ -84,9 +84,9 @@ void Particle::set_weight_fp(float* w) {
   weight = (double)*w;
 }
 
-/* il metodo set_ordinal serve per impostare appunto il numero ordinale di una particle        *
+/* il metodo set_ordinal serve per impostare appunto il numero ordinale di una particle               *
  * all'inizio dell'elaborazione. La funzione e' chiamata dentro Lattice::read_file e dovrebbe esser   *
- * fatta in modo tale che la prima particle del file sia la #1 (e non la #0)                        */
+ * fatta in modo tale che la prima particle del file sia la #1 (e non la #0)                          */
 void Particle::set_ordinal(int ord) {
   ordinal = ord;
 }
@@ -96,8 +96,8 @@ int Particle::get_ordinal() {
   return ordinal;
 }
 
-/* il metodo move_far_far_away fa quello che dice, come appare evidente;       *
- * una particle  "schiaffata_a_infinito"   non dara' contributi nemmeno se si    *
+/* il metodo move_far_far_away fa quello che dice, come appare evidente;           *
+ * una particle  "schiaffata_a_infinito"   non dara' contributi nemmeno se si      *
  * accende l'interazione coulombiana (quindi bisogna pensarci)                     *
  * QUESTA VARIANTE MANDA LA PARTICELLA AD INFINITO ANCHE LUNGO Z, PONENDOLA        *
  * QUINDI SICURAMENTE FUORI DALLA BEAMLINE.                                        */
@@ -106,9 +106,9 @@ void Particle::move_far_far_away() {
   xfase[3] = xfase[4] = xfase[5] = 0.0;         // momenti nulli: la particle e' ferma all'infinito
 }
 
-/* il metodo move_far_far_away_same_z, diversamente dal precedente, non manda
-ad infinito anche la coordinata z ddella particle; resta inoltre conservato l'impulso
-lungo z ad essa associato */
+/* il metodo move_far_far_away_same_z, diversamente dal precedente, non manda              *
+ * ad infinito anche la coordinata z ddella particle; resta inoltre conservato l'impulso   *
+ * lungo z ad essa associato                                                               */
 void Particle::move_far_far_away_same_z() {
   xfase[0] = xfase[1] = 1.e+308;
   xfase[3] = xfase[4] = 0.0;
@@ -138,9 +138,9 @@ Particle::Particle(double m, double c, double w, bool status, int ord, bool ffin
   dumped_z = false;
 }
 
-/* il metodo set_values esegue la stessa funzione del costruttore parametrico
-(eccetto l'azzeramento del punto di fase)
-DOPO  che le particelle siano gia' state create */
+/* il metodo set_values esegue la stessa funzione del costruttore parametrico   *
+ * (eccetto l'azzeramento del punto di fase)                                    *
+ * DOPO  che le particelle siano gia' state create                              */
 void Particle::set_values(double m, double c, double w, bool status, int ord, bool ffiniziale, bool fffinale) {
   mass = m;
   charge = c;
@@ -151,8 +151,8 @@ void Particle::set_values(double m, double c, double w, bool status, int ord, bo
   fff = fffinale;
 }
 
-/* il metodo set_phase_space assegna il contenuto dell'argomento x
-al punto di fase della particle */
+/* il metodo set_phase_space assegna il contenuto dell'argomento x   *
+ * al punto di fase della particle                                   */
 void Particle::set_phase_space(double *x) {
   for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) xfase[i] = x[i];
 }
@@ -165,8 +165,8 @@ void Particle::set_phase_space_px(float *x) {
   for (int i = 3; i < 6; i++) xfase[i] = (double)x[i];
 }
 
-/* il metodo get_phase_space restituisce la i-esima componente del punto
-di fase della particle */
+/* il metodo get_phase_space restituisce la i-esima componente del punto  *
+ * di fase della particle                                                 */
 double Particle::get_phase_space(int i) {
   return xfase[i];
 }

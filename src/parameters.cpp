@@ -282,7 +282,7 @@ void Parameters::parse_command_line(int argc, char ** argv) {
   for (int i = 1; i < argc; i++)
     /* We will iterate over argv[] to get the parameters stored inside. **
     ** Note that we're starting on 1 because we don't need to know the  **
-    ** path of the program, which is stored in argv[0]          */
+    ** path of the program, which is stored in argv[0]                   */
   {
     if (std::string(argv[i]) == "-f")
     {
@@ -587,9 +587,9 @@ void Parameters::initialize_lattice() {
       for (size_t i = 0; i < lattice_elements.size(); ++i) {
         log_file << description[i]; // element type
 
-                  /*se ci sono piu' di 1.000.000 di particelle, in automatico viene scritto in notazione scientifica*/
+        /*se ci sono piu' di 1.000.000 di particelle, in automatico viene scritto in notazione scientifica*/
 
-                  // non c'e' un ciclo for per poter scrivere i parametri in un ordine piu' umanamente comprensibile
+        // non c'e' un ciclo for per poter scrivere i parametri in un ordine piu' umanamente comprensibile
         log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 4]; // starting position of the element
         log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 1]; // ending position of the element
         log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 2];

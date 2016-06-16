@@ -28,13 +28,11 @@
 
 Particle * Magnetic_element::particle;
 
-/*
-la classe  base "Magnetic_element": tutti gli oggetti magnetici "concreti"
-sono sue elementarissime struct figlie; cio' consente:
-A) di aggiungerne magnetic_element_number tipi se ne vuole senza cambiare
-l'architettura del programma;
-B) di fornire una funzione campo vettoriale diversa per ogni tipo
-*/
+/* la classe  base "Magnetic_element": tutti gli oggetti magnetici "concreti"   *
+ * sono sue elementarissime struct figlie; cio' consente:                       *
+ * A) di aggiungerne magnetic_element_number tipi se ne vuole senza cambiare    *
+ * l'architettura del programma;                                                *
+ * B) di fornire una funzione campo vettoriale diversa per ogni tipo            */
 
 void Magnetic_element::set_values(double * values) {
   for (int i = 0; i < N_PARAMETRI_LATTICINO_LETTI_DA_INPUT; i++) parameters[i] = values[i];
@@ -51,8 +49,8 @@ double Magnetic_element::get_values(int i) {
 
 
 /**************************************************************************************
-* implementazione dei metodi static per i campi vettoriali di ciascuna struct figlia *
-**************************************************************************************/
+ * implementazione dei metodi static per i campi vettoriali di ciascuna struct figlia *
+ **************************************************************************************/
 Azzeratore::Azzeratore() {}
 void Azzeratore::field(double *Phi) {
   Phi[0] = 0.0;

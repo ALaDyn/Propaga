@@ -25,12 +25,10 @@
 #include "definitions.h"
 #include "particle.h"
 
- /*
-  la classe  base "Magnetic_element": tutti gli oggetti magnetici "concreti"
-  sono sue elementarissime struct figlie; cio' consente:
-  A) di aggiungerne altri tipi se ne vuole senza cambiare l'architettura del programma;
-  B) di fornire una funzione campo vettoriale diversa per ogni tipo
-  */
+ /* la classe  base "Magnetic_element": tutti gli oggetti magnetici "concreti"               *
+  * sono sue elementarissime struct figlie; cio' consente:                                   *
+  * A) di aggiungerne altri tipi se ne vuole senza cambiare l'architettura del programma;    *
+  * B) di fornire una funzione campo vettoriale diversa per ogni tipo                        */
 
 class Magnetic_element
 {

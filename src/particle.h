@@ -37,8 +37,8 @@ class Particle
   /* codice particle - cfr. Fluka particle numbers http://www.fluka.org/fluka.php?id=man_onl&sub=7 */
   int particle_code;
 
-  /* la variabile booleana assorbita e' inizializzata a false dal costruttore default *
-  * la check_if_absorbed serve per verificare quando sia stata appena assorbita        */
+  /* la variabile booleana assorbita e' inizializzata a false dal costruttore default  *
+   * la check_if_absorbed serve per verificare quando sia stata appena assorbita       */
   bool absorbed;
   int check_if_absorbed;
 
@@ -81,16 +81,16 @@ public:
 
   void set_weight_fp(float *);
 
-  /* il metodo set_ordinal serve per impostare appunto il numero ordinale di una particle        *
+  /* il metodo set_ordinal serve per impostare appunto il numero ordinale di una particle               *
    * all'inizio dell'elaborazione. La funzione e' chiamata dentro Lattice::read_file e dovrebbe esser   *
-   * fatta in modo tale che la prima particle del file sia la #1 (e non la #0)                        */
+   * fatta in modo tale che la prima particle del file sia la #1 (e non la #0)                          */
   void set_ordinal(int);
 
   /* il metodo get_ordinal restituisce il numero ordinale della particle nel bunch */
   int get_ordinal();
 
-  /* il metodo move_far_far_away fa quello che dice, come appare evidente;       *
-   * una particle  "schiaffata_a_infinito"   non dara' contributi nemmeno se si    *
+  /* il metodo move_far_far_away fa quello che dice, come appare evidente;           *
+   * una particle  "schiaffata_a_infinito"   non dara' contributi nemmeno se si      *
    * accende l'interazione coulombiana (quindi bisogna pensarci)                     *
    * QUESTA VARIANTE MANDA LA PARTICELLA AD INFINITO ANCHE LUNGO Z, PONENDOLA        *
    * QUINDI SICURAMENTE FUORI DALLA BEAMLINE.                                        */

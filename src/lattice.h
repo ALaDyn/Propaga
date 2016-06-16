@@ -48,11 +48,11 @@ class Lattice
   void rkutta_(double *, double *);
 
   /********************************************************************************************
-  * i puntatori www e param detengono rispettivamente l'area di lavoro per          *
-  * l'evoluzione delle particelle [www] e la collezione di tutti i parametri fisici     *
-  * del lattice [param]; l'ultima variabile [lunghezza] ne rappresenta l'estensione     *
-  * spaziale totale lungo l'asse Z                              *
-  ********************************************************************************************/
+   * i puntatori www e param detengono rispettivamente l'area di lavoro per                   *
+   * l'evoluzione delle particelle [www] e la collezione di tutti i parametri fisici          *
+   * del lattice [param]; l'ultima variabile [lunghezza] ne rappresenta l'estensione          *
+   * spaziale totale lungo l'asse Z                                                           *
+   ********************************************************************************************/
   double *www, *param, *param_default, length, dt_time_step;
 
   /* la variabile   mie_vive   detiene il numero di particelle che non sono
