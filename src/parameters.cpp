@@ -654,7 +654,7 @@ void Parameters::open_diag_files() {
   char* now_string = ctime(&now);
   log_file << "Date and time: " << now_string;
   if (!restart) log_file << "\nWORKING....." << std::endl;
-  else log_file << "\nRESTARTING from j = " << step << " and t = " << sim_time << "....." << std::endl;
+  else log_file << "\nRESTARTING from j = " << step << " and ct = " << sim_time << " cm ....." << std::endl;
 }
 
 
@@ -835,7 +835,7 @@ void Parameters::write_diag() {
       << std::setprecision(6) << std::setiosflags(std::ios::scientific) << weightTot << "\t"
       << z_mean << "\t" << sigma_x << "\t" << epsilon_x << "\t" << sigma_y << "\t" << epsilon_y << "\t" << sigma_z << "\t" << epsilon_z << std::endl;
 
-    log_file << "t = " << sim_time << ", z_min = " << global_z_min << ", z_max = " << global_z_max << ", tot_global = " << tot_global << ", alive_global " << vive_global << "." << std::endl;
+    log_file << "ct = " << sim_time << " cm, z_min = " << global_z_min << " cm, z_max = " << global_z_max << " cm, tot_global = " << tot_global << ", alive_global " << vive_global << "." << std::endl;
   }
 }
 
@@ -950,8 +950,8 @@ void Parameters::write_tracks() {
 
 
 void Parameters::close_diag_files() {
-  log_file << "At the end of the sim, (t = " << sim_time << ", j = " << step << "), the " << vive_global
-    << " particles still alive have these coordinates: z_min: " << global_z_min << " - z_max: " << global_z_max << std::endl << "END OF RUN!" << std::flush << std::endl;
+  log_file << "At the end of the sim, (ct = " << sim_time << " cm, j = " << step << "), the " << vive_global
+    << " particles still alive have these coordinates: z_min: " << global_z_min << " cm, z_max: " << global_z_max << " cm." << std::endl << "END OF RUN!" << std::flush << std::endl;
   time_t now = time(0);
   char* now_string = ctime(&now);
   log_file << "Finished on: " << now_string << std::endl;
