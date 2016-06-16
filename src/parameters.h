@@ -99,7 +99,6 @@ public:
 
   double ptot;
   double weightTot;
-  double vx, vy, vz;
   double xvx_sum, yvy_sum, zvz_sum;
   double xvx_mean, yvy_mean, zvz_mean;
   double x_sum, x2_sum, x_mean, x2_mean, px_sum, px2_sum, px_mean, px2_mean, sigma_x, sigma_px, epsilon_x;

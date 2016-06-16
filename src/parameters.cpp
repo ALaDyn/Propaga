@@ -49,7 +49,6 @@ Parameters::Parameters() {
   contarighe = 0;
 
   weightTot = 0.;
-  vx = 0., vy = 0., vz = 0.;
   xvx_sum = 0., yvy_sum = 0., zvz_sum = 0.;
   xvx_mean = 0., yvy_mean = 0., zvz_mean = 0.;
   x_sum = 0., x2_sum = 0., x_mean = 0., x2_mean = 0., px_sum = 0., px2_sum = 0., px_mean = 0., px2_mean = 0., sigma_x = 0., sigma_px = 0., epsilon_x = 0.;
@@ -719,6 +718,8 @@ void Parameters::write_output() {
 
 
 void Parameters::write_diag() {
+  double x, y, z, vx, vy, vz, w;
+
   x_sum = 0.;
   y_sum = 0.;
   z_sum = 0.;
@@ -740,32 +741,37 @@ void Parameters::write_diag() {
     if (enable_reference_particle && n == mypart - 1) continue;     // cosi' che non entrino in gioco particelle perse o inutili
     if (lattice->particle[n].is_absorbed()) continue;
 
-    weightTot += lattice->particle[n].get_weight();
 
-    x_sum += (xvec[N_DIMENSIONI_SPAZIO_FASI*n] * lattice->particle[n].get_weight());
-    y_sum += (xvec[N_DIMENSIONI_SPAZIO_FASI*n + 1] * lattice->particle[n].get_weight());
-    z_sum += (xvec[N_DIMENSIONI_SPAZIO_FASI*n + 2] * lattice->particle[n].get_weight());
-
+    w = lattice->particle[n].get_weight();
+    x = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 0] * w;
+    y = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 1] * w;
+    z = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 2] * w;
     vx = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 3];
     vy = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 4];
     vz = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 5];
     ptot = sqrt(vx*vx + vy*vy + vz*vz);
     vx /= ptot; // abbiamo bisogno di x' = v_x/v
     vy /= ptot; // abbiamo bisogno di y' = v_y/v
+    vx *= w;
+    vy *= w;
+    vz *= w;
 
-    px_sum += (vx * lattice->particle[n].get_weight());
-    py_sum += (vy * lattice->particle[n].get_weight());
-    pz_sum += (vz * lattice->particle[n].get_weight());
-
-    x2_sum += (((xvec[N_DIMENSIONI_SPAZIO_FASI*n + 0] - x_mean)  * (xvec[N_DIMENSIONI_SPAZIO_FASI*n + 0] - x_mean))* lattice->particle[n].get_weight());
-    y2_sum += (((xvec[N_DIMENSIONI_SPAZIO_FASI*n + 1] - y_mean)  * (xvec[N_DIMENSIONI_SPAZIO_FASI*n + 1] - y_mean))* lattice->particle[n].get_weight());
-    z2_sum += (((xvec[N_DIMENSIONI_SPAZIO_FASI*n + 2] - z_mean)  * (xvec[N_DIMENSIONI_SPAZIO_FASI*n + 2] - z_mean))* lattice->particle[n].get_weight());
-    px2_sum += (((vx - px_mean) * (vx - px_mean)) * lattice->particle[n].get_weight());
-    py2_sum += (((vy - py_mean) * (vy - py_mean)) * lattice->particle[n].get_weight());
-    pz2_sum += (((vz - pz_mean) * (vz - pz_mean)) * lattice->particle[n].get_weight());
-    xvx_sum += (((xvec[N_DIMENSIONI_SPAZIO_FASI*n + 0] - x_mean) * (vx - px_mean))* lattice->particle[n].get_weight());
-    yvy_sum += (((xvec[N_DIMENSIONI_SPAZIO_FASI*n + 1] - y_mean) * (vy - py_mean))* lattice->particle[n].get_weight());
-    zvz_sum += (((xvec[N_DIMENSIONI_SPAZIO_FASI*n + 2] - z_mean) * (vz - pz_mean))* lattice->particle[n].get_weight());
+    weightTot += w;
+    x_sum += x;
+    y_sum += y;
+    z_sum += z;
+    px_sum += vx;
+    py_sum += vy;
+    pz_sum += vz;
+    x2_sum += x * x;
+    y2_sum += y * y;
+    z2_sum += z * z;
+    px2_sum += vx * vx;
+    py2_sum += vy * vy;
+    pz2_sum += vz * vz;
+    xvx_sum += x * vx;
+    yvy_sum += y * vy;
+    zvz_sum += z * vz;
   }
 
 
@@ -821,6 +827,9 @@ void Parameters::write_diag() {
   epsilon_y = sigma_y * sigma_py - m_y*m_y;   // epsilon_y = y2_mean * py2_mean - yvy_mean*yvy_mean;
   epsilon_z = sigma_z * sigma_pz - m_z*m_z;   // epsilon_z = z2_mean * pz2_mean - zvz_mean*zvz_mean;
 
+  sigma_x > 0. ? sigma_x = sqrt(sigma_x) : sigma_x = 0.;
+  sigma_y > 0. ? sigma_y = sqrt(sigma_y) : sigma_y = 0.;
+  sigma_z > 0. ? sigma_z = sqrt(sigma_z) : sigma_z = 0.;
   epsilon_x > 0. ? epsilon_x = sqrt(epsilon_x) : epsilon_x = 0.;
   epsilon_y > 0. ? epsilon_y = sqrt(epsilon_y) : epsilon_y = 0.;
   epsilon_z > 0. ? epsilon_z = sqrt(epsilon_z) : epsilon_z = 0.;

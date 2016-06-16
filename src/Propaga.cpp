@@ -42,7 +42,7 @@ int main(int argc, char *argv[]) {
     if (par.step == par.step_to_be_dumped) par.write_output();
     if (par.big_coutta && (!(par.step % par.big_coutta))) par.write_output();
     if (!(par.step % par.diag_coutta)) par.write_diag();
-    if (par.ntrack) par.write_tracks();
+    if (par.ntrack && !(par.step % par.diag_coutta)) par.write_tracks();
     if (par.z_dump > 0.0) par.dump_z();
   }
 
