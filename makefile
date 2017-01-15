@@ -49,10 +49,10 @@ obj/lattice.o: src/lattice.cpp src/lattice.h src/definitions.h src/magnetic_elem
 	$(COMPILER) $(OPT) -c src/lattice.cpp -o obj/lattice.o
 
 obj/parameters.o: src/parameters.cpp src/parameters.h src/definitions.h src/magnetic_element.h src/lattice.h src/particle.h
-	$(COMPILER) $(OPT) -I./src/ -c src/parameters.cpp -o obj/parameters.o
+	$(COMPILER) $(OPT) -I./src/jsoncons/src -c src/parameters.cpp -o obj/parameters.o
 
 obj/Propaga.o: src/Propaga.cpp src/magnetic_element.h src/definitions.h
-	$(COMPILER) $(OPT) -I./src/ -c src/Propaga.cpp -o obj/Propaga.o
+	$(COMPILER) $(OPT) -I./src/jsoncons/src -c src/Propaga.cpp -o obj/Propaga.o
 
 clean:
 	rm -f $(OBJECTS)

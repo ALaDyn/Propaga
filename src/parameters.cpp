@@ -138,7 +138,7 @@ void Parameters::parse_json_file() {
     log_file << e.what() << std::endl;
   }
   jsoncons::json empty_json;
-  jsoncons::json& json_lattice_elements = parameters.has_member("Magnetic_elements") ? parameters["Magnetic_elements"] : empty_json;
+  jsoncons::json json_lattice_elements = parameters.has_member("Magnetic_elements") ? parameters["Magnetic_elements"] : empty_json;
 
   eMin_json = parameters.has_member("emin") ? parameters["emin"].as<double>() : -1.0;
   eMax_json = parameters.has_member("emax") ? parameters["emax"].as<double>() : -1.0;

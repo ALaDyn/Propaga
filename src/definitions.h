@@ -28,21 +28,12 @@
 #define release_date  "June 16, 2016"
 #define latest_commit "clean up emittance and envelope definitions"
 
-#define _CRT_SECURE_NO_WARNINGS
-
 //#define ENABLE_DEBUG
 //#define USE_SPACECHARGE // incompleto, funziona solo per singolo task, tra diversi task le particelle non si vedono
 
-
-#if defined(_MSC_VER)
-#define OMPI_IMPORTS
-#define OPAL_IMPORTS
-#define ORTE_IMPORTS
-#endif
-
-
-#define _USE_MATH_DEFINES
+#ifndef _GNU_SOURCES
 #define _GNU_SOURCES
+#endif
 
 #define C                      2.99792458e+10         // speed of light [cm/s]
 #define ME_G                   9.10938291E-28         // electron mass [g]

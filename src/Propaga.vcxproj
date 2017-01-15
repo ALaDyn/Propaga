@@ -70,18 +70,22 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)\bin\</OutDir>
     <IntDir>$(SolutionDir)\obj\</IntDir>
+    <IncludePath>$(SolutionDir)\src\jsoncons\src\;$(VC_IncludePath);$(WindowsSDK_IncludePath);</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -89,6 +93,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(MSMPI_INC);$(MSMPI_INC)\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OMPI_IMPORTS;
+OPAL_IMPORTS;
+ORTE_IMPORTS;
+_USE_MATH_DEFINES
+;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -102,6 +111,11 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(MSMPI_INC);$(MSMPI_INC)\x64;$(MSMPI_INC)\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OMPI_IMPORTS;
+OPAL_IMPORTS;
+ORTE_IMPORTS;
+_USE_MATH_DEFINES
+;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -117,6 +131,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(MSMPI_INC);$(MSMPI_INC)\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OMPI_IMPORTS;
+OPAL_IMPORTS;
+ORTE_IMPORTS;
+_USE_MATH_DEFINES
+;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -134,6 +153,11 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <AdditionalIncludeDirectories>$(MSMPI_INC);$(MSMPI_INC)\x64;$(MSMPI_INC)\x64;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;OMPI_IMPORTS;
+OPAL_IMPORTS;
+ORTE_IMPORTS;
+_USE_MATH_DEFINES
+;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -158,25 +182,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="definitions.h" />
-    <ClInclude Include="jsoncons\json.hpp" />
-    <ClInclude Include="jsoncons\json1.hpp" />
-    <ClInclude Include="jsoncons\json2.hpp" />
-    <ClInclude Include="jsoncons\jsoncons.hpp" />
-    <ClInclude Include="jsoncons\jsoncons_config.hpp" />
-    <ClInclude Include="jsoncons\json_deserializer.hpp" />
-    <ClInclude Include="jsoncons\json_exception.hpp" />
-    <ClInclude Include="jsoncons\json_filter.hpp" />
-    <ClInclude Include="jsoncons\json_input_handler.hpp" />
-    <ClInclude Include="jsoncons\json_output_handler.hpp" />
-    <ClInclude Include="jsoncons\json_parser.hpp" />
-    <ClInclude Include="jsoncons\json_parser_category.hpp" />
-    <ClInclude Include="jsoncons\json_reader.hpp" />
-    <ClInclude Include="jsoncons\json_serializer.hpp" />
-    <ClInclude Include="jsoncons\json_structures.hpp" />
-    <ClInclude Include="jsoncons\json_text_error_category.hpp" />
-    <ClInclude Include="jsoncons\json_type_traits.hpp" />
-    <ClInclude Include="jsoncons\output_format.hpp" />
-    <ClInclude Include="jsoncons\parse_error_handler.hpp" />
     <ClInclude Include="lattice.h" />
     <ClInclude Include="magnetic_element.h" />
     <ClInclude Include="parameters.h" />
