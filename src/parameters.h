@@ -24,8 +24,9 @@
 
 #include "definitions.h"
 
+#ifndef NO_OMP
 #include <omp.h>
-
+#endif
 
 #include <mpi.h>
 #if defined(_MSC_VER)

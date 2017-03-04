@@ -1,30 +1,29 @@
 COMPILER = mpic++
 EXE      = bin/Propaga.exe
-OPT      = -std=c++11
+OPT      = -O3 -std=c++11
 
 OBJECTS  = obj/particle.o obj/magnetic_element.o obj/lattice.o obj/parameters.o obj/Propaga.o
 
 all: $(EXE)
 
-perf: 	OPT += -O3
-perf: 	$(EXE)
-
-debug:	OPT += -Og -g 
+debug:	OPT = -std=c++11 -Og -g 
 debug:	$(EXE)
 
+no-openmp: OPT += -DNO_OMP
+no-openmp: $(EXE)
+
 openmp:	OPT += -fopenmp
-openmp:	OPT += -O3 
 openmp:	$(EXE)
 
-CINECA:	OPT += -O3 -DCINECA
+CINECA:	OPT += -DCINECA
 CINECA:	$(EXE)
 
 openmp-intel:	OPT += -openmp 
-openmp-intel:	OPT += -O3 -ipo -march=core-avx-i 
+openmp-intel:	OPT += -ipo -march=core-avx-i 
 openmp-intel:	COMPILER = mpiicpc
 openmp-intel:	$(EXE)
 
-intel:	OPT += -O3 -ipo -march=core-avx-i
+intel:	OPT += -ipo -march=core-avx-i
 intel:	COMPILER = mpiicpc
 intel:	$(EXE)
 
