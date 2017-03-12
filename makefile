@@ -4,36 +4,40 @@ OPT      = -O3 -std=c++11
 
 OBJECTS  = obj/particle.o obj/magnetic_element.o obj/lattice.o obj/parameters.o obj/Propaga.o
 
-all: $(EXE)
+all: dirtree $(EXE)
 
 debug:	OPT = -std=c++11 -Og -g 
-debug:	$(EXE)
+debug:	dirtree $(EXE)
 
 no-openmp: OPT += -DNO_OMP
-no-openmp: $(EXE)
+no-openmp: dirtree $(EXE)
 
 openmp:	OPT += -fopenmp
-openmp:	$(EXE)
+openmp:	dirtree $(EXE)
 
 CINECA:	OPT += -DCINECA
-CINECA:	$(EXE)
+CINECA:	dirtree $(EXE)
 
 openmp-intel:	OPT += -openmp 
 openmp-intel:	OPT += -ipo -march=core-avx-i 
 openmp-intel:	COMPILER = mpiicpc
-openmp-intel:	$(EXE)
+openmp-intel:	dirtree $(EXE)
 
 intel:	OPT += -ipo -march=core-avx-i
 intel:	COMPILER = mpiicpc
-intel:	$(EXE)
+intel:	dirtree $(EXE)
 
 ibm_gnu: OPT = -O3 -std=c++0x -DCINECA
 ibm_gnu: COMPILER = mpic++
-ibm_gnu: $(EXE)
+ibm_gnu: dirtree $(EXE)
 
 ibm_xl:  OPT = -qlanglvl=extended0x -qsmp=omp -O3 -qarch=qp -qtune=qp -qmaxmem=-1 -DCINECA
 ibm_xl:  COMPILER = mpixlcxx_r
-ibm_xl:  $(EXE)
+ibm_xl:  dirtree $(EXE)
+
+dirtree:
+	@mkdir -p obj
+	@mkdir -p bin
 
 $(EXE): $(OBJECTS)
 	$(COMPILER) $(OPT) -o $(EXE) $(OBJECTS)
@@ -57,6 +61,6 @@ clean:
 	rm -f $(OBJECTS)
 
 cleanall:
-	rm -f $(OBJECTS) $(EXE) *~ .*~ 
+	rm -rf bin obj 
 
 
