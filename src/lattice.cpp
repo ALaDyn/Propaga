@@ -339,7 +339,7 @@ void Lattice::cumulative_field(double *t)
   int j;
 
 #pragma omp parallel for
-  for (size_t i = 0; i < phase_space_size; i += N_DIMENSIONI_SPAZIO_FASI)   // scansione delle particelle: si trovano in particle
+  for (int i = 0; i < (int)phase_space_size; i += N_DIMENSIONI_SPAZIO_FASI)   // scansione delle particelle: si trovano in particle
   {
     Azzeratore::field(www + phase_space_size + i);
     Drift::field(www + i, param + N_PARAMETRI_LATTICINO * 0, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
@@ -427,7 +427,7 @@ void Lattice::run(double Dt, double *t0)
 
 void Lattice::rkutta_(double *T, double *H)
 {
-  size_t I;
+  int I;
   double t, H2, H3, H6;
   t = *T;
   H2 = *H / 2.0;
@@ -438,46 +438,46 @@ void Lattice::rkutta_(double *T, double *H)
   cumulative_field(&t);
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I + 2 * phase_space_size] = www[I] + (www[I + phase_space_size] * H6);
+  for (I = 0; I < (int)phase_space_size; ++I) www[I + 2 * phase_space_size] = www[I] + (www[I + phase_space_size] * H6);
   t += H2;
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I + 3 * phase_space_size] = www[I],
+  for (I = 0; I < (int)phase_space_size; ++I) www[I + 3 * phase_space_size] = www[I],
     www[I] += (www[I + phase_space_size] * H2);  // aggiorno le posizioni in www[i] dopo lo step #1
 
   // STEP #2
   cumulative_field(&t);
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I + 2 * phase_space_size] += (www[I + phase_space_size] * H3);
+  for (I = 0; I < (int)phase_space_size; ++I) www[I + 2 * phase_space_size] += (www[I + phase_space_size] * H3);
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I] = www[I + 3 * phase_space_size] + www[I + phase_space_size] * H2;  // aggiorno le posizioni in www[i] dopo lo step #2
+  for (I = 0; I < (int)phase_space_size; ++I) www[I] = www[I + 3 * phase_space_size] + www[I + phase_space_size] * H2;  // aggiorno le posizioni in www[i] dopo lo step #2
 
   // STEP #3
   cumulative_field(&t);
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I + 2 * phase_space_size] += (www[I + phase_space_size] * H3);
+  for (I = 0; I < (int)phase_space_size; ++I) www[I + 2 * phase_space_size] += (www[I + phase_space_size] * H3);
   t += H2;
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I] = www[I + 3 * phase_space_size] + www[I + phase_space_size] * (*H);  // aggiorno le posizioni in www[i] dopo lo step #3
+  for (I = 0; I < (int)phase_space_size; ++I) www[I] = www[I + 3 * phase_space_size] + www[I + phase_space_size] * (*H);  // aggiorno le posizioni in www[i] dopo lo step #3
 
   // STEP FINALE (#4) METODO RK4
   cumulative_field(&t);
   *T = t;
 
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I] = www[I + 2 * phase_space_size] + www[I + phase_space_size] * H6;  // aggiorno le posizioni in www[i] dopo lo step #4
+  for (I = 0; I < (int)phase_space_size; ++I) www[I] = www[I + 2 * phase_space_size] + www[I + phase_space_size] * H6;  // aggiorno le posizioni in www[i] dopo lo step #4
 
   // salvo lo spaziofasi iniziale (che e' il finale dello step precedente) in www[I+4*phase_space_size]
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I + 4 * phase_space_size] = www[I + 5 * phase_space_size];
+  for (I = 0; I < (int)phase_space_size; ++I) www[I + 4 * phase_space_size] = www[I + 5 * phase_space_size];
 
   // salvo lo spaziofasi finale in www[I+5*phase_space_size]
 #pragma omp parallel for
-  for (I = 0; I < phase_space_size; ++I) www[I + 5 * phase_space_size] = www[I];
+  for (I = 0; I < (int)phase_space_size; ++I) www[I + 5 * phase_space_size] = www[I];
 
 }
 
