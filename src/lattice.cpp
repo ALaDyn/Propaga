@@ -22,9 +22,6 @@
 
 #include "definitions.h"
 #include <mpi.h>
-#if defined(_MSC_VER)
-#pragma comment(lib, "msmpi.lib")
-#endif
 #include "lattice.h"
 
 
@@ -342,7 +339,7 @@ void Lattice::cumulative_field(double *t)
   int j;
 
 #pragma omp parallel for
-  for (int i = 0; i < phase_space_size; i += N_DIMENSIONI_SPAZIO_FASI)   // scansione delle particelle: si trovano in particle
+  for (size_t i = 0; i < phase_space_size; i += N_DIMENSIONI_SPAZIO_FASI)   // scansione delle particelle: si trovano in particle
   {
     Azzeratore::field(www + phase_space_size + i);
     Drift::field(www + i, param + N_PARAMETRI_LATTICINO * 0, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
@@ -430,7 +427,7 @@ void Lattice::run(double Dt, double *t0)
 
 void Lattice::rkutta_(double *T, double *H)
 {
-  int I;
+  size_t I;
   double t, H2, H3, H6;
   t = *T;
   H2 = *H / 2.0;

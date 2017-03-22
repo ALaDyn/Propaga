@@ -22,9 +22,6 @@
 
 #include "magnetic_element.h"
 #include <cmath>
-#ifndef M_PI
-#define M_PI  3.141592653589793238462643383
-#endif
 
 Particle * Magnetic_element::particle;
 
@@ -250,7 +247,7 @@ void Iris_New::field(double *Xvec, double *Param, double *t, double *Phi, int In
   double inizio = Param[4];
   double fine = Param[1];
 
-  int phase_space_size = (int)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
   double posizione_x_attuale = Xvec[0 + 5 * phase_space_size];
   double posizione_y_attuale = Xvec[1 + 5 * phase_space_size];
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
@@ -311,7 +308,7 @@ void Iris_X::field(double *Xvec, double *Param, double *t, double *Phi, int Inde
   double inizio_z = Param[4];
   double fine_z = Param[1];
 
-  int phase_space_size = (int)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
   double posizione_x_attuale = Xvec[0 + 5 * phase_space_size];
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
   double posizione_x_precedente = Xvec[0 + 4 * phase_space_size];
@@ -346,7 +343,7 @@ void Solenoid_FF::field(double *Xvec, double *Param, double *t, double *Phi, int
 
   double inizio = Param[4];
   double fine = Param[1];
-  int phase_space_size = (int)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
 
   double mp = particle->get_mass();
   double ch = particle->get_charge();
@@ -524,7 +521,7 @@ void Chicane_SELECT_New::field(double *Xvec, double *Param, double *t, double *P
   double inizio = Param[4];
   double fine = Param[1];
 
-  int phase_space_size = (int)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
   double posizione_x_attuale = Xvec[0 + 5 * phase_space_size];
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
   double posizione_x_precedente = Xvec[0 + 4 * phase_space_size];

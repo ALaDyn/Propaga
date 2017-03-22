@@ -5,10 +5,6 @@
 
 #include "definitions.h"
 #include <mpi.h>
-#if defined(_MSC_VER)
-#pragma comment(lib, "msmpi.lib")
-#endif
-
 #include "particle.h"
 #include "magnetic_element.h"
 #include "lattice.h"

@@ -22,11 +22,21 @@
 
 #pragma once
 
-#define major_version 1
-#define minor_version 0
-#define fix_release   3
-#define release_date  "June 16, 2016"
-#define latest_commit "clean up emittance and envelope definitions"
+#include "version.h"
+#ifndef MAJOR_VERSION
+#define MAJOR_VERSION 1
+#endif
+
+#ifndef MINOR_VERSION
+#define MINOR_VERSION 0
+#endif
+
+#ifndef FIX_RELEASE
+#define FIX_RELEASE   0
+#endif
+
+#define release_date  "March 22, 2017"
+#define latest_commit "clean up makefile and vs solution, use cmake everywhere"
 
 //#define ENABLE_DEBUG
 //#define USE_SPACECHARGE // incompleto, funziona solo per singolo task, tra diversi task le particelle non si vedono
@@ -118,7 +128,3 @@ So 1 statC = g^(1/2) * cm^(3/2) * s^(-1)
 #define gamma_rel_inv(x)     (1.0 / sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5]))
 #define gamma_rel(x)         (sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5]))     // gamma relativistico definito in funzione dei gamma*beta usati nei file
 
-#if defined(CINECA)
-#define nullptr NULL
-//#define __GXX_EXPERIMENTAL_CXX0X__
-#endif

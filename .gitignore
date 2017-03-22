@@ -197,3 +197,5 @@ cnaf.intel
 
 
 *.db
+build_vs/
+build_gcc/

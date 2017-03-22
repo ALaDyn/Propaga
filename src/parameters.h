@@ -29,9 +29,6 @@
 #endif
 
 #include <mpi.h>
-#if defined(_MSC_VER)
-#pragma comment(lib, "msmpi.lib")
-#endif
 
 #if defined(__GNUC__)
 #ifdef ENABLE_DEBUG
@@ -48,12 +45,7 @@
 #include <cstring>
 #include <cmath>
 #include <ctime>
-
-#if defined(CINECA)
-#include <inttypes.h>
-#else
 #include <cstdint>
-#endif
 
 #include "jsoncons/json.hpp"
 #include "lattice.h"

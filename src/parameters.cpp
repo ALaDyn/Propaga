@@ -78,7 +78,7 @@ void Parameters::enable_mpi(int argc, char ** argv) {
 
 void Parameters::warm_up() {
   log_file.open("LOG.ppg", std::ios::app);
-  log_file << "\nPropaga v" << major_version << "." << minor_version << "." << fix_release << "\nRelease date: " << release_date << "\nLatest change: " << latest_commit << std::endl;
+  log_file << "\nPropaga v" << MAJOR_VERSION << "." << MINOR_VERSION << "." << FIX_RELEASE << "\nRelease date: " << release_date << "\nLatest change: " << latest_commit << std::endl;
   log_file << "MPI Size: " << MPI_Size << std::endl;
   //log_file << "MPI Rank: " << MPI_Rank << std::endl;
 }
