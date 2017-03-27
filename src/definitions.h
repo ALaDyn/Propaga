@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -19,8 +19,8 @@
 *  along with Propaga.  If not, see <http://www.gnu.org/licenses/>.                                   *
 ******************************************************************************************************/
 
-
-#pragma once
+#ifndef DEFINITIONS_H
+#define DEFINITIONS_H
 
 #include "version.h"
 #ifndef MAJOR_VERSION
@@ -35,8 +35,13 @@
 #define FIX_RELEASE   0
 #endif
 
-#define release_date  "March 22, 2017"
-#define latest_commit "clean up makefile and vs solution, use cmake everywhere"
+#ifndef RELEASE_DATE
+#define RELEASE_DATE  "yyyy-mm-dd"
+#endif
+
+#ifndef RELEASE_NOTES
+#define RELEASE_NOTES "changelog"
+#endif
 
 //#define ENABLE_DEBUG
 //#define USE_SPACECHARGE // incompleto, funziona solo per singolo task, tra diversi task le particelle non si vedono
@@ -51,11 +56,11 @@
 #define MP_KG                  1.6726231e-27          // proton mass [kg]
 #define MP_MEV                 938.272013             // proton mass [MeV/c^2]
 //#define CHARGE_CGS           4.80320425e-10         // electron charge [statC]  [Sinigardi]
-#define CHARGE_CGS             4.803262e-10           // electron charge [statC]  [Turchetti]
+#define CHARGE_CGS             4.803262e-10           // electron charge [statC]
 #define CHARGE_SI              1.602176565e-19        // electron charge [C]
 #define FROM_TESLA_TO_GAUSS    1.0e+4
-//#define DA_ERG_A_MEV         6.2415097523028e+5     // [Servizi]
-#define DA_ERG_A_MEV           6.241509744512e+5      // [Sinigardi]
+//#define FROM_ERG_TO_MEV         6.2415097523028e+5     // [Servizi]
+#define FROM_ERG_TO_MEV           6.241509744512e+5      // [Sinigardi]
 #define FROM_VOLT_TO_STATVOLT  3.335640951982e-3      // 1 statvolt = 299.792458 volts.
 #define E0                     8.85418781762e-12      // epsilon0
 #define KC                     1.0                    // Coulomb's constant
@@ -87,13 +92,13 @@ F=q1*q2/r^2
 So 1 statC = g^(1/2) * cm^(3/2) * s^(-1)
 *********************************************************/
 
-#define N_DIMENSIONI_SPAZIO_FASI   6
+#define PHASE_SPACE_SIZE   6
 
-// lettere ancora disponibili: A B E G H L N U Y Z
+// alphabetical ids still available for new magnetic elements: A B E G H L N U Y Z
 
-#define N_TIPI_MAGNETICI                     15
-#define N_PARAMETRI_LATTICINO                 7
-#define N_PARAMETRI_LATTICINO_LETTI_DA_INPUT  6
+#define NUMBER_OF_MAGNETIC_ELEMENTS_TYPES                     15
+#define NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT                 7
+#define NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT  6
 
 #define DRIFT               'O'
 #define SOLENOID            'S'
@@ -127,4 +132,6 @@ So 1 statC = g^(1/2) * cm^(3/2) * s^(-1)
 #define _RF_CAVITY_          14
 #define gamma_rel_inv(x)     (1.0 / sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5]))
 #define gamma_rel(x)         (sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5]))     // gamma relativistico definito in funzione dei gamma*beta usati nei file
+
+#endif
 

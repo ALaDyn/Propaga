@@ -5,6 +5,8 @@ set (CMAKE_CXX_STANDARD 11)
 set (MAJOR_VERSION 1)
 set (MINOR_VERSION 0)
 set (FIX_RELEASE 3)
+set (RELEASE_DATE "27 March 2017")
+set (RELEASE_NOTES "update copyrights, translate some defines to english")
 
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/version.h.in"

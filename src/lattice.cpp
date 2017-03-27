@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -27,8 +27,8 @@
 
 Magnetic_element * Lattice::get_generic_drift()
 {
-  double * zeri = new double[N_PARAMETRI_LATTICINO_LETTI_DA_INPUT];
-  for (int i = 0; i < N_PARAMETRI_LATTICINO_LETTI_DA_INPUT; i++) zeri[i] = 0.0;
+  double * zeri = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT];
+  for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT; i++) zeri[i] = 0.0;
   generic_drift->set_values(zeri);
   delete[] zeri;
   return generic_drift;
@@ -63,7 +63,7 @@ double * Lattice::get_pointer()
 void Lattice::read_file(std::ifstream &In, double& wtot, int tot_particles_up_to_this_rank, int contacolonne, int*& part_per_cpu, int MPI_Rank, int MPI_Size)
 {
   MPI_Status status;
-  int numero_parametri_distr_in = N_DIMENSIONI_SPAZIO_FASI + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
+  int numero_parametri_distr_in = PHASE_SPACE_SIZE + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
 
   int alive = 0;
   double *x = new double[contacolonne];
@@ -90,7 +90,7 @@ void Lattice::read_file(std::ifstream &In, double& wtot, int tot_particles_up_to
   for (int n = 0; n < part_per_cpu[MPI_Rank]; n++) {
     for (int i = 0; i < contacolonne; i++) x[i] = my_particle_chunk[n*contacolonne + i]; // x[0]=x, x[1]=y, x[2]=z, x[3]=px, x[4]=py, x[5]=pz, x[6]=type, x[7]=weight, x[8]=alive, x[9]=id
 
-    if (contacolonne == N_DIMENSIONI_SPAZIO_FASI) {
+    if (contacolonne == PHASE_SPACE_SIZE) {
       x[0] *= 1.0e-4;     // conversione da micrometri a centimetri delle posizioni per i files vecchi a 6 colonne
       x[1] *= 1.0e-4;
       x[2] *= 1.0e-4;
@@ -132,11 +132,11 @@ void Lattice::read_file(std::ifstream &In, double& wtot, int tot_particles_up_to
 
   set_alive(alive);
 
-  for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI*part_per_cpu[MPI_Rank]; i++)
+  for (int i = 0; i < PHASE_SPACE_SIZE*part_per_cpu[MPI_Rank]; i++)
   {
-    www[i] = particle[i / N_DIMENSIONI_SPAZIO_FASI].get_phase_space(i % N_DIMENSIONI_SPAZIO_FASI);
-    www[i + 4 * phase_space_size] = particle[i / N_DIMENSIONI_SPAZIO_FASI].get_phase_space(i % N_DIMENSIONI_SPAZIO_FASI);
-    www[i + 5 * phase_space_size] = particle[i / N_DIMENSIONI_SPAZIO_FASI].get_phase_space(i % N_DIMENSIONI_SPAZIO_FASI);
+    www[i] = particle[i / PHASE_SPACE_SIZE].get_phase_space(i % PHASE_SPACE_SIZE);
+    www[i + 4 * phase_space_size] = particle[i / PHASE_SPACE_SIZE].get_phase_space(i % PHASE_SPACE_SIZE);
+    www[i + 5 * phase_space_size] = particle[i / PHASE_SPACE_SIZE].get_phase_space(i % PHASE_SPACE_SIZE);
     // www[i+4*phase_space_size] e www[i+5*phase_space_size], che contengono le particelle agli step completi di runge-kutta
     // (iniziale e finale), vengono inizializzati come www[i]
   }
@@ -147,13 +147,13 @@ void Lattice::read_file(std::ifstream &In, double& wtot, int tot_particles_up_to
 /* il metodo  set_values   ripartisce nel puntatore param i parametri fisici del lattice */
 void Lattice::set_values(double *p)
 {
-  for (int i = 0; i < N_PARAMETRI_LATTICINO*magnetic_element_number; i++) param[i] = p[i];
+  for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*magnetic_element_number; i++) param[i] = p[i];
 }
 
-/* il metodo   set_phase_space_size   determina la dimensione dello spazio delle fasi = #particelle * N_DIMENSIONI_SPAZIO_FASI (ogni particle ha N_DIMENSIONI_SPAZIO_FASI coordinate, tipicamente 6) */
+/* il metodo   set_phase_space_size   determina la dimensione dello spazio delle fasi = #particelle * PHASE_SPACE_SIZE (ogni particle ha PHASE_SPACE_SIZE coordinate, tipicamente 6) */
 void Lattice::set_phase_space_size(size_t i)
 {
-  phase_space_size = N_DIMENSIONI_SPAZIO_FASI*i;
+  phase_space_size = PHASE_SPACE_SIZE*i;
 }
 
 size_t Lattice::get_phase_space_size()
@@ -198,7 +198,7 @@ void Lattice::init_pointers()
 /* il seguente overload   di   init_pointers inizializza il puntatore   param */
 void Lattice::init_pointers(int i)
 {
-  param = new double[N_PARAMETRI_LATTICINO*magnetic_element_number];
+  param = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*magnetic_element_number];
 }
 
 Lattice::Lattice()    // il costruttore default di Lattice
@@ -215,8 +215,8 @@ Magnetic_element * Lattice::get_element(int n)
   if (n >= 0 && n < magnetic_element_number) return elements[n];
   else
   {
-    double * zeri = new double[N_PARAMETRI_LATTICINO_LETTI_DA_INPUT];
-    for (int i = 0; i < N_PARAMETRI_LATTICINO_LETTI_DA_INPUT; i++) zeri[i] = 0.0;
+    double * zeri = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT];
+    for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT; i++) zeri[i] = 0.0;
     generic_drift->set_values(zeri);
     return generic_drift;
   }
@@ -263,11 +263,11 @@ essere trasformato in un costruttore parametrico, ma in tal caso
 occorrerebbe inserirvi anche l'inizializzazione di   description  */
 void Lattice::init(Magnetic_element * * el, int q)
 {
-  int i = 0, *j = new int[N_TIPI_MAGNETICI];
+  int i = 0, *j = new int[NUMBER_OF_MAGNETIC_ELEMENTS_TYPES];
   /* allocazione di  magnetic_element_number = q   puntatori ..... */
   elements = new Magnetic_element *[magnetic_element_number = q];
   generic_drift = new Magnetic_element;
-  memset((void *)j, 0, N_TIPI_MAGNETICI * sizeof(int));
+  memset((void *)j, 0, NUMBER_OF_MAGNETIC_ELEMENTS_TYPES * sizeof(int));
   while (i < magnetic_element_number)
   {
     /* .... ognuno dei quali vien fatto puntare agli elements magnetici del reticolo
@@ -328,10 +328,10 @@ void Lattice::init(Magnetic_element * * el, int q)
 ** (che poi un metodo siffatto ha dei limiti in mpi, bisognerebbe al limite usare solamente lo z medio scambiato nel main)             */
 void Lattice::update_particles() {
   int i = 0;
-  int64_t n = phase_space_size / N_DIMENSIONI_SPAZIO_FASI;
+  int64_t n = phase_space_size / PHASE_SPACE_SIZE;
   Particle *p = particle; //  particle e' il puntatore a Particle membro di Lattice
 
-  while (i < n) (p++)->set_phase_space(www + N_DIMENSIONI_SPAZIO_FASI*i++);        // <--- ecco il vero punto chiave dell'update_particles: lo spazio fase degli oggetti e il www sono sincronizzati!
+  while (i < n) (p++)->set_phase_space(www + PHASE_SPACE_SIZE*i++);        // <--- ecco il vero punto chiave dell'update_particles: lo spazio fase degli oggetti e il www sono sincronizzati!
 }
 
 void Lattice::cumulative_field(double *t)
@@ -339,12 +339,12 @@ void Lattice::cumulative_field(double *t)
   int j;
 
 #pragma omp parallel for
-  for (int i = 0; i < (int)phase_space_size; i += N_DIMENSIONI_SPAZIO_FASI)   // scansione delle particelle: si trovano in particle
+  for (int i = 0; i < (int)phase_space_size; i += PHASE_SPACE_SIZE)   // scansione delle particelle: si trovano in particle
   {
     Azzeratore::field(www + phase_space_size + i);
-    Drift::field(www + i, param + N_PARAMETRI_LATTICINO * 0, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+    Drift::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT * 0, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
 #ifdef USE_SPACECHARGE
-    SpaceCharge::field(www + i, param + N_PARAMETRI_LATTICINO * 0, t, www + phase_space_size + i, www, i / N_DIMENSIONI_SPAZIO_FASI);
+    SpaceCharge::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT * 0, t, www + phase_space_size + i, www, i / PHASE_SPACE_SIZE);
 #endif
     j = 0;
     while (j < magnetic_element_number)
@@ -354,63 +354,63 @@ void Lattice::cumulative_field(double *t)
       case DRIFT:
         break;
       case SOLENOID_SMOOTH:
-        Solenoid_SMOOTH::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Solenoid_SMOOTH::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case IRIS:
-        Iris::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
-        if (particle[i / N_DIMENSIONI_SPAZIO_FASI].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
+        Iris::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
+        if (particle[i / PHASE_SPACE_SIZE].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
         break;
       case IRIS_NEW:
-        Iris_New::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
-        if (particle[i / N_DIMENSIONI_SPAZIO_FASI].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
+        Iris_New::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
+        if (particle[i / PHASE_SPACE_SIZE].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
         break;
       case IRIS_X:
-        Iris_X::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
-        if (particle[i / N_DIMENSIONI_SPAZIO_FASI].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
+        Iris_X::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
+        if (particle[i / PHASE_SPACE_SIZE].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
         break;
       case SOLENOID:
-        Solenoid::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Solenoid::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case FOCUSING:
-        Focusing::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Focusing::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case DEFOCUSING:
-        Defocusing::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Defocusing::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case SOLENOID_FF:
-        Solenoid_FF::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Solenoid_FF::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case CHICANE_PRE:
-        Chicane_PRE::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Chicane_PRE::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case CHICANE_POST:
-        Chicane_POST::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Chicane_POST::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       case CHICANE_SELECT:
-        Chicane_SELECT::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
-        if (particle[i / N_DIMENSIONI_SPAZIO_FASI].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
+        Chicane_SELECT::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
+        if (particle[i / PHASE_SPACE_SIZE].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
         break;
       case CHICANE_SELECT_NEW:
-        Chicane_SELECT_New::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
-        if (particle[i / N_DIMENSIONI_SPAZIO_FASI].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
+        Chicane_SELECT_New::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
+        if (particle[i / PHASE_SPACE_SIZE].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
         break;
       case RF_CAVITY:
-        RF_Cavity::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        RF_Cavity::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         //        forse sarebbe meglio non farla morire se nel lattice ci sono cavita' acceleranti?!?
         break;
       case RF_CAVITY_TM_ASTRA:
-        RF_Cavity_tm_astra::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        RF_Cavity_tm_astra::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         //        forse sarebbe meglio non farla morire se nel lattice ci sono cavita' acceleranti?!?
         break;
       default:
-        Drift::field(www + i, param + N_PARAMETRI_LATTICINO*j, t, www + phase_space_size + i, i / N_DIMENSIONI_SPAZIO_FASI);
+        Drift::field(www + i, param + NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*j, t, www + phase_space_size + i, i / PHASE_SPACE_SIZE);
         break;
       }
 
-      if (particle[i / N_DIMENSIONI_SPAZIO_FASI].get_phase_space(5) <= 0.0)  // se per qualche motivo la particle ha una v_z negativa, viene assorbita e non piu' conteggiata
+      if (particle[i / PHASE_SPACE_SIZE].get_phase_space(5) <= 0.0)  // se per qualche motivo la particle ha una v_z negativa, viene assorbita e non piu' conteggiata
       {
-        particle[i / N_DIMENSIONI_SPAZIO_FASI].absorbe();
-        if (particle[i / N_DIMENSIONI_SPAZIO_FASI].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
+        particle[i / PHASE_SPACE_SIZE].absorbe();
+        if (particle[i / PHASE_SPACE_SIZE].just_absorbed()) kill_one(); // non posso farlo dentro campo perche' la' kill_one() non e' accessibile
       }
 
       j++;

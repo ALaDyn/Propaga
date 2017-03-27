@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -20,7 +20,8 @@
 ******************************************************************************************************/
 
 
-#pragma once
+#ifndef PARTICLE_H
+#define PARTICLE_H
 
 #include "definitions.h"
 #include <cstring>
@@ -29,7 +30,7 @@
 class Particle
 {
   /* punto di fase occupato dalla particle */
-  double xfase[N_DIMENSIONI_SPAZIO_FASI];
+  double xfase[PHASE_SPACE_SIZE];
 
   /* massa, carica e peso delle particelle */
   double mass, charge, weight;
@@ -146,4 +147,6 @@ public:
 
 };
 
+
+#endif
 

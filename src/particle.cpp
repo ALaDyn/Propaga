@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -129,7 +129,7 @@ Particle::Particle(double m, double c, double w, bool status, int ord, bool ffin
   mass = m;
   charge = c;
   weight = w;
-  memset((void *)xfase, 0, N_DIMENSIONI_SPAZIO_FASI*sizeof(double));
+  memset((void *)xfase, 0, PHASE_SPACE_SIZE*sizeof(double));
   absorbed = status;
   check_if_absorbed = 0;
   ordinal = ord;
@@ -154,7 +154,7 @@ void Particle::set_values(double m, double c, double w, bool status, int ord, bo
 /* il metodo set_phase_space assegna il contenuto dell'argomento x   *
  * al punto di fase della particle                                   */
 void Particle::set_phase_space(double *x) {
-  for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) xfase[i] = x[i];
+  for (int i = 0; i < PHASE_SPACE_SIZE; i++) xfase[i] = x[i];
 }
 
 void Particle::set_phase_space_x(float *x) {
@@ -186,7 +186,7 @@ double Particle::get_speed_cm_s(int i) {
 
 double Particle::get_energy_MeV() {
   double E, g = gamma_rel(xfase);
-  E = (DA_ERG_A_MEV)* (g - 1.0) * mass * C * C;        // nb: non usare la MP_MEV ma la MP (grammi)!!!!!
+  E = (FROM_ERG_TO_MEV)* (g - 1.0) * mass * C * C;        // nb: non usare la MP_MEV ma la MP (grammi)!!!!!
   return E;
 }
 

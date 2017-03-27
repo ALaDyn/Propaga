@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -32,12 +32,12 @@ Particle * Magnetic_element::particle;
  * B) di fornire una funzione campo vettoriale diversa per ogni tipo            */
 
 void Magnetic_element::set_values(double * values) {
-  for (int i = 0; i < N_PARAMETRI_LATTICINO_LETTI_DA_INPUT; i++) parameters[i] = values[i];
+  for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT; i++) parameters[i] = values[i];
 }
 
 // il metodo pubblico get_values restituisce  i valori protected delle variabili
 double Magnetic_element::get_values(int i) {
-  if (i < N_PARAMETRI_LATTICINO_LETTI_DA_INPUT) return parameters[i];
+  if (i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT) return parameters[i];
   else
   {
     return -123456.7890;
@@ -91,9 +91,9 @@ void SpaceCharge::field(double *Xvec, double *Param, double *t, double *Phi, dou
     //    xi = particellaConCuiInteragisce->get_phase_space(0);
     //    yi = particellaConCuiInteragisce->get_phase_space(1);
     //    zi = particellaConCuiInteragisce->get_phase_space(2);
-    xi = XvecFromZero[0 + i*N_DIMENSIONI_SPAZIO_FASI];
-    yi = XvecFromZero[1 + i*N_DIMENSIONI_SPAZIO_FASI];
-    zi = XvecFromZero[2 + i*N_DIMENSIONI_SPAZIO_FASI];
+    xi = XvecFromZero[0 + i*PHASE_SPACE_SIZE];
+    yi = XvecFromZero[1 + i*PHASE_SPACE_SIZE];
+    zi = XvecFromZero[2 + i*PHASE_SPACE_SIZE];
     dx = x - xi;
     dy = y - yi;
     dz = z - zi;
@@ -247,7 +247,7 @@ void Iris_New::field(double *Xvec, double *Param, double *t, double *Phi, int In
   double inizio = Param[4];
   double fine = Param[1];
 
-  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * PHASE_SPACE_SIZE;
   double posizione_x_attuale = Xvec[0 + 5 * phase_space_size];
   double posizione_y_attuale = Xvec[1 + 5 * phase_space_size];
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
@@ -308,7 +308,7 @@ void Iris_X::field(double *Xvec, double *Param, double *t, double *Phi, int Inde
   double inizio_z = Param[4];
   double fine_z = Param[1];
 
-  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * PHASE_SPACE_SIZE;
   double posizione_x_attuale = Xvec[0 + 5 * phase_space_size];
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
   double posizione_x_precedente = Xvec[0 + 4 * phase_space_size];
@@ -343,7 +343,7 @@ void Solenoid_FF::field(double *Xvec, double *Param, double *t, double *Phi, int
 
   double inizio = Param[4];
   double fine = Param[1];
-  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * PHASE_SPACE_SIZE;
 
   double mp = particle->get_mass();
   double ch = particle->get_charge();
@@ -521,7 +521,7 @@ void Chicane_SELECT_New::field(double *Xvec, double *Param, double *t, double *P
   double inizio = Param[4];
   double fine = Param[1];
 
-  size_t phase_space_size = (size_t)Param[0] * N_DIMENSIONI_SPAZIO_FASI;
+  size_t phase_space_size = (size_t)Param[0] * PHASE_SPACE_SIZE;
   double posizione_x_attuale = Xvec[0 + 5 * phase_space_size];
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
   double posizione_x_precedente = Xvec[0 + 4 * phase_space_size];

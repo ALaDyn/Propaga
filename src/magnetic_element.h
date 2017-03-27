@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -20,7 +20,8 @@
 ******************************************************************************************************/
 
 
-#pragma once
+#ifndef MAGNETIC_ELEMENT_H
+#define MAGNETIC_ELEMENT_H
 
 #include "definitions.h"
 #include "particle.h"
@@ -33,7 +34,7 @@
 class Magnetic_element
 {
 protected:
-  double parameters[N_PARAMETRI_LATTICINO_LETTI_DA_INPUT];
+  double parameters[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT];
 
 public:
   // il metodo pubblico set_values assegna valori alle variabili membro
@@ -150,3 +151,4 @@ struct SpaceCharge : public Magnetic_element
 };
 
 
+#endif

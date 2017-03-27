@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -60,11 +60,11 @@ Parameters::Parameters() {
   tag_max = 1024 * 1024 + 1;  // unsafe
   lungh_lattice = 0.0;
 
-  N_tipi = new int[N_TIPI_MAGNETICI];
-  memset((void *)N_tipi, 0, N_TIPI_MAGNETICI * sizeof(int));
+  N_tipi = new int[NUMBER_OF_MAGNETIC_ELEMENTS_TYPES];
+  memset((void *)N_tipi, 0, NUMBER_OF_MAGNETIC_ELEMENTS_TYPES * sizeof(int));
 
   lattice = new Lattice;
-  elements = new Magnetic_element *[N_TIPI_MAGNETICI];
+  elements = new Magnetic_element *[NUMBER_OF_MAGNETIC_ELEMENTS_TYPES];
 }
 
 
@@ -78,7 +78,7 @@ void Parameters::enable_mpi(int argc, char ** argv) {
 
 void Parameters::warm_up() {
   log_file.open("LOG.ppg", std::ios::app);
-  log_file << "\nPropaga v" << MAJOR_VERSION << "." << MINOR_VERSION << "." << FIX_RELEASE << "\nRelease date: " << release_date << "\nLatest change: " << latest_commit << std::endl;
+  log_file << "\nPropaga v" << MAJOR_VERSION << "." << MINOR_VERSION << "." << FIX_RELEASE << "\nRelease date: " << RELEASE_DATE << "\nLatest change: " << RELEASE_NOTES << std::endl;
   log_file << "MPI Size: " << MPI_Size << std::endl;
   //log_file << "MPI Rank: " << MPI_Rank << std::endl;
 }
@@ -121,7 +121,7 @@ void Parameters::write_run_parameters() {
     log_file << "MP_MEV = " << MP_MEV << " (proton mass, MeV/c^2)" << std::endl;
     log_file << "CHARGE = " << CHARGE_CGS << " (charge unit, statC)" << std::endl;
     log_file << "FROM_TESLA_TO_GAUSS = " << FROM_TESLA_TO_GAUSS << " (conversion of B fields from SI to CGS)" << std::endl;
-    log_file << "DA_ERG_A_MEV = " << DA_ERG_A_MEV << " (conversion of energy from CGS to SI)" << std::endl;
+    log_file << "FROM_ERG_TO_MEV = " << FROM_ERG_TO_MEV << " (conversion of energy from CGS to SI)" << std::endl;
     log_file << "FROM_VOLT_TO_STATVOLT = " << FROM_VOLT_TO_STATVOLT << " (conversion of electric potential from SI to CGS)" << std::endl;
     log_file << "E0 = " << E0 << " (epsilon_0 factor for Coulomb force)" << std::endl;
     log_file << "KC = " << KC << " (Coulomb constant)" << std::endl;
@@ -425,8 +425,8 @@ void Parameters::initialize_lattice() {
   // i parametri default vengono usati nel caso default e sono inizializzati tutti a zero
   // il caso default dello switch(description[ind]) che seguira' infatti e' un drift ed esso
   // pertanto non richiede alcun parametro particolare nell'evoluzione
-  param_default = new double[N_PARAMETRI_LATTICINO];
-  for (int i = 0; i < N_PARAMETRI_LATTICINO; i++) param_default[i] = 0.0;
+  param_default = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT];
+  for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT; i++) param_default[i] = 0.0;
 
   /* Istanziazione degli oggetti in base ai conteggi */
   drift = new Drift[N_tipi[_DRIFT_]];
@@ -469,15 +469,15 @@ void Parameters::initialize_lattice() {
 
   /* seconda scansione: lettura dei parametri fisici per ogni elemento,
   non uno di piu' non uno di meno */
-  param = new double[N_PARAMETRI_LATTICINO*lattice_elements.size()];
+  param = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*lattice_elements.size()];
 
   // i parametri input sono letti nell'ordine (piu' umano) nel quale sono scritti nell'input file
   // vengono poi utilizzati per assegnare i valori corretti ai parametri interni al codice, che sono 
   // un array con un ordine molto meno comprensibile di quello che viene usato per l'input file;
   // sono un numero diverso rispetto al numero di parametri dentro al codice perche' questi ultimi contengono 
   // anche il numero di particelle assegnate alla cpu, ad esempio, che non viene letto dall'input
-  param_input = new double[N_PARAMETRI_LATTICINO_LETTI_DA_INPUT];
-  for (int i = 0; i < N_PARAMETRI_LATTICINO_LETTI_DA_INPUT; i++) param_input[i] = 0.0;
+  param_input = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT];
+  for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT; i++) param_input[i] = 0.0;
 
   for (size_t i = 0; i < lattice_elements.size(); ++i) {
     description[i] = lattice_elements[i].type;
@@ -487,13 +487,13 @@ void Parameters::initialize_lattice() {
     param_input[3] = lattice_elements[i].par_02;
     param_input[4] = lattice_elements[i].par_03;
     param_input[5] = lattice_elements[i].par_04;
-    param[N_PARAMETRI_LATTICINO*i] = static_cast<double>(mypart);
-    param[N_PARAMETRI_LATTICINO*i + 1] = param_input[1];
-    param[N_PARAMETRI_LATTICINO*i + 2] = param_input[2];
-    param[N_PARAMETRI_LATTICINO*i + 3] = param_input[3];
-    param[N_PARAMETRI_LATTICINO*i + 4] = param_input[0];
-    param[N_PARAMETRI_LATTICINO*i + 5] = param_input[4];
-    param[N_PARAMETRI_LATTICINO*i + 6] = param_input[5];
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i] = static_cast<double>(mypart);
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 1] = param_input[1];
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 2] = param_input[2];
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 3] = param_input[3];
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 4] = param_input[0];
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 5] = param_input[4];
+    param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 6] = param_input[5];
     if (param_input[1] > lungh_lattice) lungh_lattice = param_input[1];
 
     switch (lattice_elements[i].type)
@@ -589,13 +589,13 @@ void Parameters::initialize_lattice() {
         /*se ci sono piu' di 1.000.000 di particelle, in automatico viene scritto in notazione scientifica*/
 
         // non c'e' un ciclo for per poter scrivere i parametri in un ordine piu' umanamente comprensibile
-        log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 4]; // starting position of the element
-        log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 1]; // ending position of the element
-        log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 2];
-        log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 3];
-        log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 5];
-        log_file << "\t" << param[N_PARAMETRI_LATTICINO*i + 6];
-        // for (int jj=0; jj < N_PARAMETRI_LATTICINO; jj++) log_file << "\t" << param[N_PARAMETRI_LATTICINO*i+jj];
+        log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 4]; // starting position of the element
+        log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 1]; // ending position of the element
+        log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 2];
+        log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 3];
+        log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 5];
+        log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i + 6];
+        // for (int jj=0; jj < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT; jj++) log_file << "\t" << param[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*i+jj];
 
         log_file << std::endl;
       }
@@ -660,7 +660,7 @@ void Parameters::open_diag_files() {
 void Parameters::write_output() {
   double *particle_chunk;
   MPI_Status status;
-  int numero_parametri_distr_out = N_DIMENSIONI_SPAZIO_FASI + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
+  int numero_parametri_distr_out = PHASE_SPACE_SIZE + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
 
   if (MPI_Rank == 0) {
     std::stringstream filename;
@@ -671,11 +671,11 @@ void Parameters::write_output() {
     log_file << "STARTING DUMP DATA" << std::endl;
     particle_chunk = new double[mypart * numero_parametri_distr_out];
     for (int n = 0; n < mypart; n++) {
-      for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) particle_chunk[numero_parametri_distr_out*n + i] = xvec[N_DIMENSIONI_SPAZIO_FASI*n + i];
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 0] = lattice->particle[n].get_particle_code();
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 1] = lattice->particle[n].get_weight();
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 2] = lattice->particle[n].is_absorbed();
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 3] = lattice->particle[n].get_ordinal();
+      for (int i = 0; i < PHASE_SPACE_SIZE; i++) particle_chunk[numero_parametri_distr_out*n + i] = xvec[PHASE_SPACE_SIZE*n + i];
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 0] = lattice->particle[n].get_particle_code();
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 1] = lattice->particle[n].get_weight();
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 2] = lattice->particle[n].is_absorbed();
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 3] = lattice->particle[n].get_ordinal();
     }
     for (int n = 0; n < mypart; n++) {
       for (int i = 0; i < numero_parametri_distr_out; i++) ris << std::setprecision(7) << particle_chunk[numero_parametri_distr_out*n + i] << "\t";
@@ -699,11 +699,11 @@ void Parameters::write_output() {
   else {
     particle_chunk = new double[mypart * numero_parametri_distr_out];
     for (int n = 0; n < mypart; n++) {
-      for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) particle_chunk[numero_parametri_distr_out*n + i] = xvec[N_DIMENSIONI_SPAZIO_FASI*n + i];
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 0] = lattice->particle[n].get_particle_code();
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 1] = lattice->particle[n].get_weight();
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 2] = lattice->particle[n].is_absorbed();
-      particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 3] = lattice->particle[n].get_ordinal();
+      for (int i = 0; i < PHASE_SPACE_SIZE; i++) particle_chunk[numero_parametri_distr_out*n + i] = xvec[PHASE_SPACE_SIZE*n + i];
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 0] = lattice->particle[n].get_particle_code();
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 1] = lattice->particle[n].get_weight();
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 2] = lattice->particle[n].is_absorbed();
+      particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 3] = lattice->particle[n].get_ordinal();
     }
     MPI_Send(particle_chunk, mypart * numero_parametri_distr_out, MPI_DOUBLE, 0, MPI_Rank + MPI_Size, MPI_COMM_WORLD);
     delete[] particle_chunk;
@@ -743,12 +743,12 @@ void Parameters::write_diag() {
 
 
     w = lattice->particle[n].get_weight();
-    x = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 0] * w;
-    y = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 1] * w;
-    z = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 2] * w;
-    vx = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 3];
-    vy = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 4];
-    vz = xvec[N_DIMENSIONI_SPAZIO_FASI*n + 5];
+    x = xvec[PHASE_SPACE_SIZE*n + 0] * w;
+    y = xvec[PHASE_SPACE_SIZE*n + 1] * w;
+    z = xvec[PHASE_SPACE_SIZE*n + 2] * w;
+    vx = xvec[PHASE_SPACE_SIZE*n + 3];
+    vy = xvec[PHASE_SPACE_SIZE*n + 4];
+    vz = xvec[PHASE_SPACE_SIZE*n + 5];
     ptot = sqrt(vx*vx + vy*vy + vz*vz);
     vx /= ptot; // abbiamo bisogno di x' = v_x/v
     vy /= ptot; // abbiamo bisogno di y' = v_y/v
@@ -853,12 +853,12 @@ void Parameters::write_diag() {
 void Parameters::dump_z() {
   MPI_Status status;
   int particle_number_to_dump = 0;
-  int numero_parametri_distr_out = N_DIMENSIONI_SPAZIO_FASI + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
+  int numero_parametri_distr_out = PHASE_SPACE_SIZE + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
 
   if (MPI_Rank == 0) {
     for (int n = 0; n < mypart; n++) {
       if (!(lattice->particle[n].get_dumped_z()) && lattice->particle[n].get_phase_space(2) >= z_dump) {
-        for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) outz_file << std::setprecision(7) << xvec[N_DIMENSIONI_SPAZIO_FASI*n + i] << "\t";
+        for (int i = 0; i < PHASE_SPACE_SIZE; i++) outz_file << std::setprecision(7) << xvec[PHASE_SPACE_SIZE*n + i] << "\t";
         outz_file << std::setprecision(7) << sim_time << "\t"         // pay attention: in this output there's not the particle id but the time at which it has been dumped!!
           << lattice->particle[n].get_weight() << "\t"
           << (double)lattice->particle[n].is_absorbed() << "\t"       // the cast, while terrible in the quality of the output, is just to uniform the file, since the buffer dumped
@@ -874,7 +874,7 @@ void Parameters::dump_z() {
 
       MPI_Recv(particle_chunk, particle_number_to_dump * numero_parametri_distr_out, MPI_DOUBLE, rank, rank + 4 * MPI_Size, MPI_COMM_WORLD, &status);
       for (int n = 0; n < particle_number_to_dump; n++) {
-        for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI + 4; i++) outz_file << std::setprecision(7) << particle_chunk[N_DIMENSIONI_SPAZIO_FASI*n + i] << "\t";
+        for (int i = 0; i < PHASE_SPACE_SIZE + 4; i++) outz_file << std::setprecision(7) << particle_chunk[PHASE_SPACE_SIZE*n + i] << "\t";
         outz_file << std::endl;
       }
 
@@ -887,7 +887,7 @@ void Parameters::dump_z() {
     std::vector<double> one_particle(10, 0.0);
     for (int n = 0; n < mypart; n++) {
       if (!(lattice->particle[n].get_dumped_z()) && lattice->particle[n].get_phase_space(2) >= z_dump) {
-        for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) one_particle[i] = xvec[N_DIMENSIONI_SPAZIO_FASI*n + i];
+        for (int i = 0; i < PHASE_SPACE_SIZE; i++) one_particle[i] = xvec[PHASE_SPACE_SIZE*n + i];
         one_particle[6] = sim_time;                                   // pay attention: in this output there's not the particle id but the time at which it has been dumped!!
         one_particle[7] = lattice->particle[n].get_weight();
         one_particle[8] = (double)lattice->particle[n].is_absorbed();
@@ -907,7 +907,7 @@ void Parameters::dump_z() {
 void Parameters::write_tracks() {
   MPI_Status status;
   double *my_particle_chunk = NULL;
-  int numero_parametri_distr_out = N_DIMENSIONI_SPAZIO_FASI + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
+  int numero_parametri_distr_out = PHASE_SPACE_SIZE + 3 + 1; //unsafe x,y,z,px,py,pz,type,weight,alive,id
   bool do_i_have_any_track = (ntrack > tot_particles_up_to_this_rank ? true : false);
   int my_ntrack = (do_i_have_any_track ? ntrack - tot_particles_up_to_this_rank : 0);
   my_ntrack = (my_ntrack > mypart ? mypart : my_ntrack);
@@ -917,11 +917,11 @@ void Parameters::write_tracks() {
   my_particle_chunk = new double[my_ntrack * numero_parametri_distr_out];
 
   for (int n = 0; n < my_ntrack; n++) {
-    for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) my_particle_chunk[numero_parametri_distr_out*n + i] = xvec[N_DIMENSIONI_SPAZIO_FASI*n + i];
-    my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 0] = lattice->particle[n].get_particle_code();
-    my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 1] = lattice->particle[n].get_weight();
-    my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 2] = lattice->particle[n].is_absorbed();
-    my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 3] = lattice->particle[n].get_ordinal();
+    for (int i = 0; i < PHASE_SPACE_SIZE; i++) my_particle_chunk[numero_parametri_distr_out*n + i] = xvec[PHASE_SPACE_SIZE*n + i];
+    my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 0] = lattice->particle[n].get_particle_code();
+    my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 1] = lattice->particle[n].get_weight();
+    my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 2] = lattice->particle[n].is_absorbed();
+    my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 3] = lattice->particle[n].get_ordinal();
   }
 
   if (MPI_Rank == 0) {
@@ -942,11 +942,11 @@ void Parameters::write_tracks() {
   }
   else {
     for (int n = 0; n < my_ntrack; n++) {
-      for (int i = 0; i < N_DIMENSIONI_SPAZIO_FASI; i++) my_particle_chunk[numero_parametri_distr_out*n + i] = xvec[N_DIMENSIONI_SPAZIO_FASI*n + i];
-      my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 0] = lattice->particle[n].get_particle_code();
-      my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 1] = lattice->particle[n].get_weight();
-      my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 2] = lattice->particle[n].is_absorbed();
-      my_particle_chunk[numero_parametri_distr_out*n + N_DIMENSIONI_SPAZIO_FASI + 3] = lattice->particle[n].get_ordinal();
+      for (int i = 0; i < PHASE_SPACE_SIZE; i++) my_particle_chunk[numero_parametri_distr_out*n + i] = xvec[PHASE_SPACE_SIZE*n + i];
+      my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 0] = lattice->particle[n].get_particle_code();
+      my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 1] = lattice->particle[n].get_weight();
+      my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 2] = lattice->particle[n].is_absorbed();
+      my_particle_chunk[numero_parametri_distr_out*n + PHASE_SPACE_SIZE + 3] = lattice->particle[n].get_ordinal();
     }
     MPI_Send(my_particle_chunk, my_ntrack * numero_parametri_distr_out, MPI_DOUBLE, 0, MPI_Rank + 2 * MPI_Size, MPI_COMM_WORLD);
   }

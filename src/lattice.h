@@ -1,5 +1,5 @@
 /******************************************************************************************************
-*             Copyright 2010-2016 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
+*             Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti              *
 ******************************************************************************************************/
 
 /******************************************************************************************************
@@ -20,7 +20,8 @@
 ******************************************************************************************************/
 
 
-#pragma once
+#ifndef LATTICE_H
+#define LATTICE_H
 
 #include "definitions.h"
 #include <fstream>
@@ -96,7 +97,7 @@ public:
   /* il metodo  set_values   ripartisce nel puntatore param i parametri fisici del lattice */
   void set_values(double *);
 
-  /* il metodo   set_phase_space_size   determina la dimensione dello spazio delle fasi = #particelle * N_DIMENSIONI_SPAZIO_FASI (ogni particle ha N_DIMENSIONI_SPAZIO_FASI coordinate, tipicamente 6) */
+  /* il metodo   set_phase_space_size   determina la dimensione dello spazio delle fasi = #particelle * PHASE_SPACE_SIZE (ogni particle ha PHASE_SPACE_SIZE coordinate, tipicamente 6) */
   void set_phase_space_size(size_t);
 
   size_t get_phase_space_size();
@@ -158,5 +159,5 @@ public:
 };
 
 
-
+#endif
 
