@@ -1,4 +1,5 @@
-[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
+[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master") 
+[![Build status](https://ci.appveyor.com/api/projects/status/i2by6yapg60jl3my?svg=true)](https://ci.appveyor.com/project/cenit/propaga)
 
 Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
 *Uses [jsoncons library](https://github.com/danielaparker/jsoncons)*

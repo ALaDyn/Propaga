@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.1)
+cmake_minimum_required (VERSION 3.2)
 project (Propaga)
 
 set (CMAKE_CXX_STANDARD 11)
@@ -28,16 +28,19 @@ else()
   add_definitions(-DNO_OMP)
 endif()
 
+find_package(MPI REQUIRED)
+
+set(CMAKE_CXX_COMPILE_FLAGS ${CMAKE_CXX_COMPILE_FLAGS} ${MPI_COMPILE_FLAGS})
+set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS})
+set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/src)
+
+include_directories(${MPI_INCLUDE_PATH} ${Propaga_INCLUDE_DIRS} ${PROJECT_BINARY_DIR} ${JSONCONS_INCLUDE_DIR})
+
 file(GLOB Propaga_SOURCES "src/*.cpp")
 file(GLOB Propaga_HEADERS "src/*.h")
 set (Propaga_INCLUDE_DIRS "src/jsoncons/src/")
 add_executable (Propaga ${Propaga_SOURCES})
 
-# Require MPI for this project
-find_package(MPI REQUIRED)
-set(CMAKE_CXX_COMPILE_FLAGS ${CMAKE_CXX_COMPILE_FLAGS} ${MPI_COMPILE_FLAGS})
-set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS})
-include_directories(${MPI_INCLUDE_PATH} ${Propaga_INCLUDE_DIRS} ${PROJECT_BINARY_DIR})
 target_link_libraries(Propaga ${MPI_LIBRARIES}) 
 install (TARGETS Propaga DESTINATION ${CMAKE_SOURCE_DIR}/bin/)
 
