@@ -5,7 +5,7 @@ Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti
 
 `Propaga` is a C++ code developed by the Physics of Complex System group, inside the Physics and Astronomy Department at the Bologna University, to study the three dimensional propagation of a particle bunch along a transfer line, composed by many different lattice elements.  
 If you want to use it, you're kindly requested to inform the authors and cite this Zenodo DOI:
-[![DOI](https://zenodo.org/badge/4711/ALaDyn/Propaga.svg)](https://zenodo.org/badge/latestdoi/4711/ALaDyn/Propaga)
+[![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.595776.svg)](http://dx.doi.org/10.5281/zenodo.595776)
 
 CMake 3.2, MPI libraries and a C++11-compatible compiler are required.  
 On Windows, use [vcpkg](https://github.com/Microsoft/vcpkg/) to install libraries and [chocolatey](https://github.com/chocolatey/choco) to install tools for best results.  
