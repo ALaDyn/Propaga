@@ -3,17 +3,6 @@
 .vs/
 .vscode/
 
-#doc temp files
-*.synctex.gz
-doc/src/*.pdf
-doc/src/*.log
-doc/src/*.asy
-doc/src/*.aux
-doc/src/*.fdb
-doc/src/*.fdb_latexmk
-doc/src/*.fls
-doc/src/*.pre
-
 # Windows image file caches
 Thumbs.db
 ehthumbs.db
@@ -55,28 +44,15 @@ Desktop.ini
 *.x86_64
 *.hex
 
-
-# QtCreator
-*.autosave
-*.config
-*.creator
-*.creator.user
-piccante.files
-piccante.includes
-*.opendb
-*.iobj
-*.ipdb
-*.db
-src/inputPiccante.json
-
-
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
 [Rr]elease/
 x64/
 build/
+build_*/
 bld/
 [Bb]in/
 [Oo]bj/
-src/sobol.*
+
+
