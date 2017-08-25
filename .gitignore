@@ -49,8 +49,7 @@ Desktop.ini
 [Dd]ebugPublic/
 [Rr]elease/
 x64/
-build/
-build_*/
+[Bb]uild*/
 bld/
 [Bb]in/
 [Oo]bj/

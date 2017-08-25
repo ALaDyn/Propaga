@@ -14,7 +14,6 @@ compiler:
 addons:
   apt:
     packages:
-    - libboost-all-dev
     - libopenmpi-dev
 
 matrix:
@@ -28,4 +27,4 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install open-mpi ; fi
 
 script:
-  - mkdir build_gcc && cd build_gcc && cmake .. && cmake --build . && cd ..
+  - mkdir build && cd build && cmake .. && cmake --build . && cd ..
