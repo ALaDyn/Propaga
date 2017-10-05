@@ -8,6 +8,11 @@ set (FIX_RELEASE 3)
 set (RELEASE_DATE "27 March 2017")
 set (RELEASE_NOTES "update copyrights, translate some defines to english")
 
+# make sure that the default is a RELEASE
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE RELEASE)
+endif()
+
 configure_file (
   "${PROJECT_SOURCE_DIR}/src/version.h.in"
   "${PROJECT_BINARY_DIR}/version.h"

@@ -37,7 +37,10 @@ install:
 build_script:
   - mkdir build
   - cd build
-  - if [%COMPILER%]==[cygwin] cmake .. -G "Unix Makefiles"
+#  - if [%COMPILER%]==[cygwin] cmake .. -G "Unix Makefiles"
+  - if [%COMPILER%]==[cygwin] cmake .. -G "Ninja"
   - if [%COMPILER%]==[cygwin] cmake --build . --target install
-  - if [%COMPILER%]==[vs]     cmake .. -G "Visual Studio 15 2017" "-DCMAKE_TOOLCHAIN_FILE=C:\projects\vcpkg\scripts\buildsystems\vcpkg.cmake"
-  - if [%COMPILER%]==[vs]     cmake --build . --target install --config Release
+#  - if [%COMPILER%]==[vs]     cmake .. -G "Visual Studio 15 2017" "-DCMAKE_TOOLCHAIN_FILE=C:\projects\vcpkg\scripts\buildsystems\vcpkg.cmake"
+#  - if [%COMPILER%]==[vs]     cmake --build . --target install --config Release
+  - if [%COMPILER%]==[vs]     cmake .. -G "Ninja" "-DCMAKE_TOOLCHAIN_FILE=C:\projects\vcpkg\scripts\buildsystems\vcpkg.cmake"
+  - if [%COMPILER%]==[vs]     cmake --build . --target install

@@ -29,4 +29,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ninja    ; fi
 
 script:
-  - mkdir build && cd build && cmake .. && cmake --build . && cd ..
+  - mkdir build
+  - cd build
+  - cmake .. -G "Ninja"
+  - cmake --build . --target install
