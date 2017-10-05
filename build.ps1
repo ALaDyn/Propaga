@@ -1,5 +1,8 @@
-mkdir -Force build_vs
-cd build_vs
-cmake .. -G "Visual Studio 15" "-DCMAKE_TOOLCHAIN_FILE=$Home\Codice\vcpkg\scripts\buildsystems\vcpkg.cmake"
+Remove-Item .\build -Force -Recurse
+New-Item .\build -itemtype directory -Force
+cd build
+#cmake .. -G "Visual Studio 15" "-DCMAKE_TOOLCHAIN_FILE=$env:WORKSPACE\vcpkg\scripts\buildsystems\vcpkg.cmake"
+cmake .. -G "Ninja" "-DCMAKE_TOOLCHAIN_FILE=$env:WORKSPACE\vcpkg\scripts\buildsystems\vcpkg.cmake" 
 cmake --build .
 cd ..
+

@@ -96,9 +96,9 @@ So 1 statC = g^(1/2) * cm^(3/2) * s^(-1)
 
 // alphabetical ids still available for new magnetic elements: A B E G H L N U Y Z
 
-#define NUMBER_OF_MAGNETIC_ELEMENTS_TYPES                     15
-#define NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT                 7
-#define NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT  6
+#define NUMBER_OF_MAGNETIC_ELEMENTS_TYPES                         15
+#define NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT                   7
+#define NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT   6
 
 #define DRIFT               'O'
 #define SOLENOID            'S'
@@ -131,7 +131,7 @@ So 1 statC = g^(1/2) * cm^(3/2) * s^(-1)
 #define _RF_CAVITY_TM_ASTRA_ 11
 #define _RF_CAVITY_          14
 #define gamma_rel_inv(x)     (1.0 / sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5]))
-#define gamma_rel(x)         (sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5]))     // gamma relativistico definito in funzione dei gamma*beta usati nei file
+#define gamma_rel(x)         (sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5])) // x must be a gamma*beta
 
 #endif
 
