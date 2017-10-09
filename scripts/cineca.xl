@@ -1,6 +1,0 @@
-#! /bin/bash
-
-module load bgq-xl
-
-make ibm_xl
-

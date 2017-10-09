@@ -25,7 +25,7 @@
 
 #include "definitions.h"
 
-#ifndef NO_OMP
+#if defined(_OPENMP) && !defined (NO_OMP)
 #include <omp.h>
 #endif
 
