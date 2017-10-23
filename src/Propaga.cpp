@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   Parameters par;
   par.enable_mpi(argc, argv);
   if (par.MPI_Rank == 0) par.warm_up();
-  par.parse_command_line(argc, argv);
+  par.input_parameters_filename = std::string(argv[1]);
   par.parse_json_file();
   if (par.MPI_Rank == 0) par.open_dist_file();
   if (par.MPI_Rank == 0) par.write_run_parameters();
@@ -30,13 +30,13 @@ int main(int argc, char *argv[]) {
   if (par.big_coutta) par.write_output();
 
   double sim_length = (par.lungh_lattice > par.z_dump ? par.lungh_lattice : par.z_dump);
-  
+
   while (par.global_z_min < sim_length && par.vive_global) {
     par.lattice->run(par.dt, &(par.sim_time));
     par.stats();
     par.step++;
     if (par.step == par.step_to_be_dumped) par.write_output();
-    if (par.big_coutta && (!(par.step % par.big_coutta))) par.write_output();
+    else if (par.big_coutta && (!(par.step % par.big_coutta))) par.write_output();
     if (!(par.step % par.diag_coutta)) par.write_diag();
     if (par.ntrack && !(par.step % par.diag_coutta)) par.write_tracks();
     if (par.z_dump > 0.0) par.dump_z();
@@ -50,4 +50,3 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
-

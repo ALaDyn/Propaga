@@ -1,0 +1,56 @@
+{
+    "Magnetic_elements": [
+        {
+            "begin_value": 1.0,
+            "end_value": 1.0,
+            "par_01": 0.05,
+            "par_02": 0.0,
+            "par_03": 0.0,
+            "par_04": 0.0,
+            "type": "J"
+        },
+        {
+            "begin_value": 2.0,
+            "end_value": 4.0,
+            "par_01": 65.0,
+            "par_02": 0.0,
+            "par_03": 0.0,
+            "par_04": 0.0,
+            "type": "F"
+        },
+        {
+            "begin_value": 9.0,
+            "end_value": 11.0,
+            "par_01": 75.0,
+            "par_02": 0.0,
+            "par_03": 0.0,
+            "par_04": 0.0,
+            "type": "D"
+        },
+        {
+            "begin_value": 15.0,
+            "end_value": 17.0,
+            "par_01": 70.0,
+            "par_02": 0.0,
+            "par_03": 0.0,
+            "par_04": 0.0,
+            "type": "F"
+        },
+        {
+            "begin_value": 23.0,
+            "end_value": 25.0,
+            "par_01": 85.0,
+            "par_02": 0.0,
+            "par_03": 0.0,
+            "par_04": 0.0,
+            "type": "D"
+        }
+    ],
+    "dt": 0.1,
+    "emax": 1.0e+100,
+    "emin": 0.0,
+    "input_distribution": "test.initialbunch.ppg",
+    "run_name": "test",
+    "steps_between_diags": 50,
+    "steps_between_dumps": 5000
+}

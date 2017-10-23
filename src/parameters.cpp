@@ -31,7 +31,7 @@ void enable_extended_debug() {
 
 
 Parameters::Parameters() {
-  prefisso = "test";
+  run_name = "test";
   input_parameters_filename = "input.json";
   input_dist_filename = "test.initialbunch.ppg";
   fallita_lettura_distribuzione = true;
@@ -99,7 +99,7 @@ void Parameters::open_dist_file() {
   }
   else {
     std::stringstream filename;
-    filename << prefisso << "." << std::setw(7) << std::setfill('0') << restart_step << ".ppg";
+    filename << run_name << "." << std::setw(7) << std::setfill('0') << restart_step << ".ppg";
     In_dist.open(filename.str().c_str());
     fallita_lettura_distribuzione = In_dist.fail();
     log_file << "Distribution file: " << filename.str().c_str() << std::endl;
@@ -140,6 +140,32 @@ void Parameters::parse_json_file() {
   jsoncons::json empty_json;
   jsoncons::json json_lattice_elements = parameters.has_member("Magnetic_elements") ? parameters["Magnetic_elements"] : empty_json;
 
+  input_dist_filename = parameters.has_member("input_distribution") ? parameters["input_distribution"].as<std::string>() : "test.initialbunch.ppg";
+  if (MPI_Rank == 0) log_file << "Input file distribution: " << input_dist_filename << std::endl;
+
+  restart_step = parameters.has_member("restart_step") ? parameters["restart_step"].as<int>() : 0;
+  if (MPI_Rank == 0 && restart_step) restart = true, log_file << "Restarting from step " << restart_step << std::endl;
+
+  lattice->override_ordinal = parameters.has_member("override_ordinal") ? parameters["override_ordinal"].as<bool>() : false;
+  if (MPI_Rank == 0 && lattice->override_ordinal) log_file << "Overriding ordinal number (if present) in input distribution" << std::endl;
+
+  run_name = parameters.has_member("run_name") ? parameters["run_name"].as<std::string>() : "test";
+  if (MPI_Rank == 0) log_file << "Run name: " << run_name << std::endl;
+
+  enable_reference_particle = parameters.has_member("enable_reference_particle") ? parameters["enable_reference_particle"].as<bool>() : false;
+  if (MPI_Rank == 0 && enable_reference_particle) log_file << "The last particle in the distribution is being considered as the reference particle" << std::endl;
+
+  ntrack = parameters.has_member("track_particle_below_id") ? parameters["track_particle_below_id"].as<int>() : 0;
+  if (MPI_Rank == 0) if (ntrack < 1) log_file << "Wrong ntrack from commandline, reset to 0" << std::endl;
+  if (ntrack < 1) ntrack = 0;
+  if (MPI_Rank == 0 && ntrack) log_file << "Tracking all the particles below id #" << ntrack << std::endl;
+
+  step_to_be_dumped = parameters.has_member("step_to_be_dumped") ? parameters["step_to_be_dumped"].as<int>() : -1;
+  if (MPI_Rank == 0 && step_to_be_dumped > 0) log_file << "Will dump distribution at step " << step_to_be_dumped << std::endl;
+
+  z_dump = parameters.has_member("dump_at_position") ? parameters["dump_at_position"].as<double>() : -1.0;
+  if (MPI_Rank == 0 && z_dump > 0) log_file << "Will dump distribution at z = " << z_dump << std::endl;
+
   eMin_json = parameters.has_member("emin") ? parameters["emin"].as<double>() : -1.0;
   eMax_json = parameters.has_member("emax") ? parameters["emax"].as<double>() : -1.0;
   dt = parameters.has_member("dt") ? parameters["dt"].as<double>() : 0.1;
@@ -166,7 +192,9 @@ void Parameters::parse_json_file() {
     log_file << "Minimum energy: " << eMin_json << std::endl;
     log_file << "Maximum energy: " << eMax_json << std::endl;
     if (eMin_json > eMax_json) log_file << "Wrong energy selection!" << std::endl;
-    log_file << "dt: " << dt << " - output dumps every " << big_coutta << " steps, diags every " << diag_coutta << " steps" << std::endl;
+    log_file << "dt: " << dt << " - ";
+    if (big_coutta) log_file << "output dumps every " << big_coutta << " steps, ";
+    log_file << "diags every " << diag_coutta << " steps" << std::endl;
   }
 
 }
@@ -273,74 +301,6 @@ void Parameters::read_particles_per_cpu() {
   xvec = lattice->get_pointer();
 
   lattice->read_file(In_dist, weightTot, tot_particles_up_to_this_rank, contacolonne, part_per_cpu, MPI_Rank, MPI_Size);
-}
-
-
-void Parameters::parse_command_line(int argc, char ** argv) {
-
-  for (int i = 1; i < argc; i++)
-    /* We will iterate over argv[] to get the parameters stored inside. **
-    ** Note that we're starting on 1 because we don't need to know the  **
-    ** path of the program, which is stored in argv[0]                   */
-  {
-    if (std::string(argv[i]) == "-f")
-    {
-      input_dist_filename = std::string(argv[i + 1]);
-      i++;              // so that we skip in the for cycle the parsing of the <nome-file-particelle>
-    }
-    else if (std::string(argv[i]) == "-restart")
-    {
-      restart_step = atoi(argv[i + 1]);
-      restart = true;
-      if (MPI_Rank == 0) log_file << "Restarting from step " << restart_step << std::endl;
-      i++;
-    }
-    else if (std::string(argv[i]) == "-override_ordinal")
-    {
-      lattice->override_ordinal = true;
-      if (MPI_Rank == 0) log_file << "Overriding ordinal number (if present) in input distribution" << std::endl;
-    }
-    else if (std::string(argv[i]) == "-par")
-    {
-      input_parameters_filename = std::string(argv[i + 1]);
-      if (MPI_Rank == 0) log_file << "Input parameters json file: " << std::string(argv[i + 1]) << std::endl;
-      i++;
-    }
-    else if (std::string(argv[i]) == "-o")
-    {
-      prefisso = std::string(argv[i + 1]);
-      if (MPI_Rank == 0) log_file << "Run string: " << prefisso << std::endl;
-      i++;
-    }
-    else if (std::string(argv[i]) == "-LASTSLOWEST")
-    {
-      enable_reference_particle = 1;
-      if (MPI_Rank == 0) log_file << "The last particle in the distribution is being considered as the reference particle" << std::endl;
-    }
-    else if (std::string(argv[i]) == "-TRACK")
-    {
-      ntrack = atoi(argv[i + 1]);
-      if (MPI_Rank == 0) if (ntrack < 1) log_file << "Wrong ntrack from commandline, reset to 0" << std::endl;
-      if (ntrack < 1) ntrack = 0;
-      i++;
-    }
-    else if (std::string(argv[i]) == "-OUT")
-    {
-      step_to_be_dumped = atoi(argv[i + 1]);
-      if (MPI_Rank == 0) log_file << "Will dump distribution at step " << step_to_be_dumped << std::endl;
-      i++;
-    }
-    else if (std::string(argv[i]) == "-OUTZ")
-    {
-      z_dump = atof(argv[i + 1]);
-      if (MPI_Rank == 0) log_file << "Will dump distribution at z = " << z_dump << std::endl;
-      i++;
-    }
-    else
-    {
-      if (MPI_Rank == 0) log_file << "Invalid argument: " << argv[i] << std::endl;
-    }
-  }
 }
 
 
@@ -472,9 +432,9 @@ void Parameters::initialize_lattice() {
   param = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT*lattice_elements.size()];
 
   // i parametri input sono letti nell'ordine (piu' umano) nel quale sono scritti nell'input file
-  // vengono poi utilizzati per assegnare i valori corretti ai parametri interni al codice, che sono 
+  // vengono poi utilizzati per assegnare i valori corretti ai parametri interni al codice, che sono
   // un array con un ordine molto meno comprensibile di quello che viene usato per l'input file;
-  // sono un numero diverso rispetto al numero di parametri dentro al codice perche' questi ultimi contengono 
+  // sono un numero diverso rispetto al numero di parametri dentro al codice perche' questi ultimi contengono
   // anche il numero di particelle assegnate alla cpu, ad esempio, che non viene letto dall'input
   param_input = new double[NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT];
   for (int i = 0; i < NUMBER_OF_PARAMETERS_PER_LATTICE_ELEMENT_READ_FROM_INPUT; i++) param_input[i] = 0.0;
@@ -629,10 +589,10 @@ void Parameters::filter_particles() {
 
 
 void Parameters::open_diag_files() {
-  minmax_filename << prefisso << ".minmax.ppg";
-  outz_filename << prefisso << ".9999999.ppg";
-  track_filename << prefisso << ".tracked.ppg";
-  emitt_filename << prefisso << ".emitt.ppg";
+  minmax_filename << run_name << ".minmax.ppg";
+  outz_filename << run_name << ".9999999.ppg";
+  track_filename << run_name << ".tracked.ppg";
+  emitt_filename << run_name << ".emitt.ppg";
   minmax_file.open(minmax_filename.str().c_str(), std::ios::app);
   minmax_file.setf(std::ios::scientific);
 
@@ -665,7 +625,7 @@ void Parameters::write_output() {
   if (MPI_Rank == 0) {
     std::stringstream filename;
     std::ofstream ris;
-    filename << prefisso << "." << std::setw(7) << std::setfill('0') << step << ".ppg";
+    filename << run_name << "." << std::setw(7) << std::setfill('0') << step << ".ppg";
     ris.open(filename.str().c_str());
     ris.setf(std::ios::scientific); // sara' scritto in notazione scientifica
     log_file << "STARTING DUMP DATA" << std::endl;
@@ -1038,4 +998,3 @@ void Parameters::stats()
   MPI_Allreduce(&pz_max, &global_pz_max, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
   MPI_Allreduce(&myalive, &vive_global, 1, MPI_INT, MPI_SUM, MPI_COMM_WORLD);
 }
-

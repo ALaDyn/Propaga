@@ -1,37 +1,35 @@
-[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master") 
+[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
 [![Build status](https://ci.appveyor.com/api/projects/status/i2by6yapg60jl3my?svg=true)](https://ci.appveyor.com/project/cenit/propaga)
 
-Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
+Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti
 *Uses [jsoncons library](https://github.com/danielaparker/jsoncons)*
 
-`Propaga` is a C++ code developed by the Physics of Complex System group, inside the Physics and Astronomy Department at the Bologna University, to study the three dimensional propagation of a particle bunch along a transfer line, composed by many different lattice elements.  
+`Propaga` is a C++ code developed by the Physics of Complex System group, inside the Physics and Astronomy Department at the Bologna University, to study the three dimensional propagation of a particle bunch along a transfer line, composed by many different lattice elements.
 If you want to use it, you're kindly requested to inform the authors and cite this Zenodo DOI:
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.595776.svg)](http://dx.doi.org/10.5281/zenodo.595776)
 
-CMake 3.2, MPI libraries and a C++11-compatible compiler are required.  
-On Windows, use [vcpkg](https://github.com/Microsoft/vcpkg/) to install libraries and [chocolatey](https://github.com/chocolatey/choco) to install tools for best results.  
-On Mac, use [homebrew](https://github.com/Homebrew/brew) to install libraries and tools for best results.  
-On Linux, please use your package manager (yum, dnf, apt, ...) to install libraries and tools.  
+CMake 3.2, MPI libraries and a C++11-compatible compiler are required.
+On Windows, use [vcpkg](https://github.com/Microsoft/vcpkg/) to install libraries and [chocolatey](https://github.com/chocolatey/choco) to install tools for best results.
+On Mac, use [homebrew](https://github.com/Homebrew/brew) to install libraries and tools for best results.
+On Linux, please use your package manager (yum, dnf, apt, ...) to install libraries and tools.
 
-In order to work, beside the executable, you should have at least two other important files: a json parameter file (default: input.json) and a phase-space distribution particle file (default test.initialbunch.ppg). Of course these default names can be varied, providing the correct path to Propaga through the following flags:
-
-+ use `-par` to define the name of the json file
-+ use `-f` to define the name of the phase-space distribution particle file
-
-There are other useful command line parameters that you can give to the executable:
-
-+ use `-restart xxx` to tell the program that we want to restart from time-step=xxx (of course the dump must be present in the folder)
-+ use `-LASTSLOWEST` to tell the program that the last particle in the input file is the reference particle, or to say, the slowest particle that you keep as a reference to wait for when deciding how to terminate the simulation. This particle, in this case, will be discarded in the bunch parameters calculations
-+ use `-o` to define the name of the simulation. It will be used at the beginning of any file written during the simulation.
-+ use `-override_ordinal` to discard the particle id column in the input distribution file (10th column, if present).
-+ use `-OUT xxx` to define a time-step=xxx at which you want the full output.
-+ use `-OUTZ xxx` to define a *z* position at which you want an output. When a particle cross that invisible boundary, it will be dumped on a special file (`sim_name.9999999.ppg`), with the 7th column being the time-step at which they have been dumped and *not* their type!
-+ use `-TRACK nn` to obtain the full phase-space of the first #nn particles during the whole simulation, all together in the same file `sim_name.tracked.ppg`. It is useful to create heatmaps of the particle density along the transfer line
+In order to work, beside the executable, you should have at least two other important files: a json parameter file (default: input.json) and a phase-space distribution particle file (default test.initialbunch.ppg). Of course these default names can be varied. You should launch `Propaga` with this command line:
+```
+Propaga input.json
+```
++ `input.json` should be defined only if not using this default filename
 
 
 ## Json file description ##
 The input parameters for the simulation are driven by a single json file.
-
++ `input_dist_filename`: contains the particle distribution phase space
++ `restart_step`: to tell the program that we want to restart from time-step=xxx (of course the dump must be present in the folder)
++ `override_ordinal`: to discard the particle id column in the input distribution file (10th column, if present).
++ `run_name`: to define the name of the simulation. It will be used at the beginning of any file written during the simulation.
++ `enable_reference_particle`: to tell the program that the last particle in the input file is the reference particle, or to say, the slowest particle that you keep as a reference to wait for when deciding how to terminate the simulation. This particle, in this case, will be discarded in the bunch parameters calculations
++ `track_particle_below_id`: to obtain the full phase-space of the first #nn particles during the whole simulation, all together in the same file `sim_name.tracked.ppg`. It is useful to create heatmaps of the particle density along the transfer line
++ `step_to_be_dumped`: to define a time-step=xxx at which you want the full output.
++ `z_dump`: to define a *z* position at which you want an output. When a particle cross that invisible boundary, it will be dumped on a special file (`sim_name.9999999.ppg`), with the 7th column being the time-step at which they have been dumped and *not* their type!
 + `emin`, `emax`: if you define a negative value, no minimum/maximum energy is defined. Particle outside this energy band will be flagged as lost, but their evolution will proceed anyway (being lost means that they are excluded from bunch properties calculations, but not from full dumps, where in the nineth column their flag will be set to `1`)
 + `dt`: interval (in units of ct [cm]) between the 4th order Runge-Kutta integrator steps
 + `steps_between_dumps`: number of steps between full data dumps (if 0, no dumps will be done)
@@ -42,6 +40,8 @@ This is an example of a working json file
 
 ```
 {
+  "input_distribution": "test.initialbunch.ppg",
+  "run_name": "test",
   "emin": -1,
   "emax": -1,
   "dt": 0.1,
@@ -140,17 +140,17 @@ where `x,y,z` are in cm, `x',y',z'` are particle momenta normalized by mass*c, `
 ## Papers containing Propaga simulations ##
 
 1) P. Londrillo, G. Servizi, A. Sgattoni, S. Sinigardi, M. Sumini, G. Turchetti, Protons Acceleration by CO2 Laser Pulses and Perspectives for Medical Applications,
-CO2 Laser-Optimisation and Application (2012)  
+CO2 Laser-Optimisation and Application (2012)
 [doi:10.5772/38882](http://www.intechopen.com/books/co2-laser-optimisation-and-application/protons-acceleration-from-co2-laser-pulses-for-biomedical-applications)
 
-2) G. Turchetti, S. Sinigardi, P. Londrillo, F. Rossi, M. Sumini, D. Giove, C. De Martinis, The LILIA experiment: Energy selection and post-acceleration of laser generated protons, AIP Conference Proceedings, 1507, 820-824 (2012)  
+2) G. Turchetti, S. Sinigardi, P. Londrillo, F. Rossi, M. Sumini, D. Giove, C. De Martinis, The LILIA experiment: Energy selection and post-acceleration of laser generated protons, AIP Conference Proceedings, 1507, 820-824 (2012)
 [doi:10.1063/1.4773804](http://dx.doi.org/10.1063/1.4773804)
 
-3) S. Sinigardi, G. Turchetti, P. Londrillo, F. Rossi, D. Giove, C. De Martinis, M. Sumini, Transport and energy selection of laser generated protons for postacceleration with a compact linac, Phys. Rev. ST Accel. Beams 16, 3, 031301 (2013)  
+3) S. Sinigardi, G. Turchetti, P. Londrillo, F. Rossi, D. Giove, C. De Martinis, M. Sumini, Transport and energy selection of laser generated protons for postacceleration with a compact linac, Phys. Rev. ST Accel. Beams 16, 3, 031301 (2013)
 [doi:10.1103/PhysRevSTAB.16.031301](http://link.aps.org/doi/10.1103/PhysRevSTAB.16.031301)
 
-4) S. Sinigardi, P. Londrillo, F. Rossi, G. Turchetti, P. R. Bolton, Post-acceleration of laser driven protons with a compact high field linac, Proc. SPIE 8779, 87791J (2013)  
+4) S. Sinigardi, P. Londrillo, F. Rossi, G. Turchetti, P. R. Bolton, Post-acceleration of laser driven protons with a compact high field linac, Proc. SPIE 8779, 87791J (2013)
 [doi:10.1117/12.2017235](http://dx.doi.org/10.1117/12.2017235)
 
-5) S. Sinigardi, G. Turchetti, F. Rossi, P. Londrillo, D. Giove, C. De Martinis, P. R. Bolton, High quality proton beams from hybrid integrated laser-driven ion acceleration systems, Nucl. Instr. Meth. A 740, 99-104 (2014)  
+5) S. Sinigardi, G. Turchetti, F. Rossi, P. Londrillo, D. Giove, C. De Martinis, P. R. Bolton, High quality proton beams from hybrid integrated laser-driven ion acceleration systems, Nucl. Instr. Meth. A 740, 99-104 (2014)
 [doi:10.1016/j.nima.2013.10.080](http://www.sciencedirect.com/science/article/pii/S0168900213014873)

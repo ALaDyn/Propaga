@@ -3,10 +3,10 @@ project (Propaga)
 
 set (CMAKE_CXX_STANDARD 11)
 set (MAJOR_VERSION 1)
-set (MINOR_VERSION 0)
-set (FIX_RELEASE 3)
-set (RELEASE_DATE "27 March 2017")
-set (RELEASE_NOTES "update copyrights, translate some defines to english")
+set (MINOR_VERSION 1)
+set (FIX_RELEASE 0)
+set (RELEASE_DATE "23 October 2017")
+set (RELEASE_NOTES "move all configs into json file")
 
 # make sure that the default is a RELEASE
 if(NOT CMAKE_BUILD_TYPE)
@@ -45,6 +45,5 @@ file(GLOB Propaga_SOURCES "src/*.cpp")
 file(GLOB Propaga_HEADERS "src/*.h")
 add_executable (Propaga ${Propaga_SOURCES})
 
-target_link_libraries(Propaga ${MPI_LIBRARIES}) 
+target_link_libraries(Propaga ${MPI_LIBRARIES})
 install (TARGETS Propaga DESTINATION ${CMAKE_SOURCE_DIR}/bin/)
-

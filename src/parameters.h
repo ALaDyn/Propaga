@@ -76,7 +76,7 @@ public:
 
   std::string input_parameters_filename;
   std::string input_dist_filename;
-  std::string prefisso;
+  std::string run_name;
   std::ostringstream track_filename, outz_filename, minmax_filename, emitt_filename;
 
   bool fallita_lettura_distribuzione;
@@ -98,7 +98,7 @@ public:
   double x_sum, x2_sum, x_mean, x2_mean, px_sum, px2_sum, px_mean, px2_mean, sigma_x, sigma_px, epsilon_x;
   double y_sum, y2_sum, y_mean, y2_mean, py_sum, py2_sum, py_mean, py2_mean, sigma_y, sigma_py, epsilon_y;
   double z_sum, z2_sum, z_mean, z2_mean, pz_sum, pz2_sum, pz_mean, pz2_mean, sigma_z, sigma_pz, epsilon_z;
-  
+
   double x_sum_global, y_sum_global, z_sum_global, px_sum_global, py_sum_global, pz_sum_global;
   double x2_sum_global, y2_sum_global, z2_sum_global, px2_sum_global, py2_sum_global, pz2_sum_global, xvx_sum_global, yvy_sum_global, zvz_sum_global;
 
@@ -173,5 +173,3 @@ public:
 
 
 #endif
-
-
