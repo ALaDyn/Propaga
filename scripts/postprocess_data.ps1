@@ -1,3 +1,5 @@
+#!/usr/bin/env powershell
+
 $filein         = "distribuzione.ppg"
 $filein         = "input.json"
 $ncpu           = 4

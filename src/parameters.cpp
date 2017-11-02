@@ -172,6 +172,17 @@ void Parameters::parse_json_file() {
   big_coutta = parameters.has_member("steps_between_dumps") ? parameters["steps_between_dumps"].as<int>() : 0;
   diag_coutta = parameters.has_member("steps_between_diags") ? parameters["steps_between_diags"].as<int>() : 50;
 
+  if (eMin_json < 0.0) eMin_json = 0.0;
+  if (eMax_json < 0.0) eMax_json = 1.0e+100;
+  if (MPI_Rank == 0 && !restart) {
+    log_file << "Minimum energy: " << eMin_json << std::endl;
+    log_file << "Maximum energy: " << eMax_json << std::endl;
+    if (eMin_json > eMax_json) log_file << "Wrong energy selection!" << std::endl;
+    log_file << "dt: " << dt << " - ";
+    if (big_coutta) log_file << "output dumps every " << big_coutta << " steps, ";
+    log_file << "diags every " << diag_coutta << " steps" << std::endl;
+  }
+
   for (auto it = json_lattice_elements.begin_elements(); it != json_lattice_elements.end_elements(); ++it) {
     LElement new_element;
     jsoncons::json& json_lattice_element = *it;
@@ -184,17 +195,8 @@ void Parameters::parse_json_file() {
     new_element.par_03 = json_lattice_element.has_member("par_03") ? json_lattice_element["par_03"].as<double>() : 0.0;
     new_element.par_04 = json_lattice_element.has_member("par_04") ? json_lattice_element["par_04"].as<double>() : 0.0;
     lattice_elements.push_back(new_element);
-  }
-
-  if (eMin_json < 0.0) eMin_json = 0.0;
-  if (eMax_json < 0.0) eMax_json = 1.0e+100;
-  if (MPI_Rank == 0 && !restart) {
-    log_file << "Minimum energy: " << eMin_json << std::endl;
-    log_file << "Maximum energy: " << eMax_json << std::endl;
-    if (eMin_json > eMax_json) log_file << "Wrong energy selection!" << std::endl;
-    log_file << "dt: " << dt << " - ";
-    if (big_coutta) log_file << "output dumps every " << big_coutta << " steps, ";
-    log_file << "diags every " << diag_coutta << " steps" << std::endl;
+    log_file << "ELEMENT: " << new_element.type << ", start: " << new_element.begin << ", end: " << new_element.end << ", par: [" 
+      << new_element.par_01 << ',' << new_element.par_02 << ',' << new_element.par_03 << ',' << new_element.par_04 << ',' << "]" << std::endl;
   }
 
 }

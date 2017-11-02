@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
   Parameters par;
   par.enable_mpi(argc, argv);
   if (par.MPI_Rank == 0) par.warm_up();
-  par.input_parameters_filename = std::string(argv[1]);
+  if (argc > 1) par.input_parameters_filename = std::string(argv[1]);
   par.parse_json_file();
   if (par.MPI_Rank == 0) par.open_dist_file();
   if (par.MPI_Rank == 0) par.write_run_parameters();
