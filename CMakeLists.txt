@@ -1,16 +1,23 @@
 cmake_minimum_required (VERSION 3.2)
 project (Propaga)
 
+enable_language(CXX)
 set (CMAKE_CXX_STANDARD 11)
+
 set (MAJOR_VERSION 1)
 set (MINOR_VERSION 1)
 set (FIX_RELEASE 0)
 set (RELEASE_DATE "23 October 2017")
 set (RELEASE_NOTES "move all configs into json file")
 
-# make sure that the default is a RELEASE
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE RELEASE)
+# make sure that the default is a Release
+set(default_build_type "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  message(STATUS "Setting build type to '${default_build_type}' as none was specified.")
+  set(CMAKE_BUILD_TYPE "${default_build_type}" CACHE
+      STRING "Choose the type of build." FORCE)
+  set_property(CACHE CMAKE_BUILD_TYPE PROPERTY STRINGS
+    "Debug" "Release" "MinSizeRel" "RelWithDebInfo")
 endif()
 
 configure_file (
@@ -35,15 +42,15 @@ endif()
 
 find_package(MPI REQUIRED)
 
-set(CMAKE_CXX_COMPILE_FLAGS ${CMAKE_CXX_COMPILE_FLAGS} ${MPI_COMPILE_FLAGS})
-set(CMAKE_CXX_LINK_FLAGS ${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS})
+set(CMAKE_CXX_COMPILE_FLAGS "${CMAKE_CXX_COMPILE_FLAGS} ${MPI_COMPILE_FLAGS}")
+set(CMAKE_CXX_LINK_FLAGS "${CMAKE_CXX_LINK_FLAGS} ${MPI_LINK_FLAGS}")
 set(JSONCONS_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/src/jsoncons/include)
 
 include_directories(${MPI_INCLUDE_PATH} ${PROJECT_BINARY_DIR} ${JSONCONS_INCLUDE_DIR})
 
 file(GLOB Propaga_SOURCES "src/*.cpp")
 file(GLOB Propaga_HEADERS "src/*.h")
-add_executable (Propaga ${Propaga_SOURCES})
+add_executable (Propaga ${Propaga_SOURCES} ${Propaga_HEADERS})
 
 target_link_libraries(Propaga ${MPI_LIBRARIES})
 install (TARGETS Propaga DESTINATION ${CMAKE_SOURCE_DIR}/bin/)
