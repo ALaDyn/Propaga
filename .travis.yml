@@ -2,30 +2,12 @@ language: cpp
 
 matrix:
   include:
-
+### since macOS homebrew's open-mpi is built against clang, it is necessary to use it or gcc@5 (ABI compatible with Apple-clang)
     - os: osx
       compiler: gcc
       name: macOS - gcc@5
       env:
         - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@5 open-mpi && brew upgrade cmake && CC=gcc-5 && CXX=g++-5"
-
-    - os: osx
-      compiler: gcc
-      name: macOS - gcc@6
-      env:
-        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@6 open-mpi && brew upgrade cmake && CC=gcc-6 && CXX=g++-6"
-
-    - os: osx
-      compiler: gcc
-      name: macOS - gcc@7
-      env:
-        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@7 open-mpi && brew upgrade cmake && CC=gcc-7 && CXX=g++-7"
-
-    - os: osx
-      compiler: gcc
-      name: macOS - gcc@8
-      env:
-        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc open-mpi && brew upgrade cmake && CC=gcc-8 && CXX=g++-8"
 
     - os: osx
       compiler: gcc

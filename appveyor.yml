@@ -33,7 +33,7 @@ install:
   - cd %WORKSPACE%\Propaga\
   - mkdir build
   - cd build
-  - if [%COMPILER%]==[cygwin] %CYGSH% cmake .. -G "Ninja" -DCMAKE_BUILD_TYPE="Debug"
+  - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake /cygdrive/c/projects/Propaga -G "Ninja" -DCMAKE_BUILD_TYPE="Debug"'
   - if [%COMPILER%]==[vs]     cmake .. -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=%WORKSPACE%\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_BUILD_TYPE="Debug"
 
 build_script:
