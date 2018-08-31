@@ -1,36 +1,214 @@
 language: cpp
 
-os:
-  - linux
-  - osx
-
-dist: trusty
-sudo: false
-
-compiler:
-  - gcc
-  - clang
-
-addons:
-  apt:
-    packages:
-    - libopenmpi-dev
-    - ninja-build
-
 matrix:
-  exclude:
-  - os: osx
-    compiler: gcc
+  include:
+
+    - os: osx
+      compiler: gcc
+      name: macOS - gcc@5
+      env:
+        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@5 open-mpi && brew upgrade cmake && CC=gcc-5 && CXX=g++-5"
+
+    - os: osx
+      compiler: gcc
+      name: macOS - gcc@6
+      env:
+        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@6 open-mpi && brew upgrade cmake && CC=gcc-6 && CXX=g++-6"
+
+    - os: osx
+      compiler: gcc
+      name: macOS - gcc@7
+      env:
+        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@7 open-mpi && brew upgrade cmake && CC=gcc-7 && CXX=g++-7"
+
+    - os: osx
+      compiler: gcc
+      name: macOS - gcc@8
+      env:
+        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc open-mpi && brew upgrade cmake && CC=gcc-8 && CXX=g++-8"
+
+    - os: osx
+      compiler: gcc
+      name: macOS - native gcc (llvm backend)
+      env:
+        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install open-mpi && brew upgrade cmake"
+
+    - os: osx
+      compiler: clang
+      name: macOS - native clang
+      env:
+        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install open-mpi && brew upgrade cmake"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - native clang
+      addons:
+        apt:
+          update: true
+          packages:
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL=""
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@3.8
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-precise-3.8
+          packages:
+            - clang-3.8
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@3.9
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-3.9
+          packages:
+            - clang-3.9
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@4.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-4.0
+          packages:
+            - clang-4.0
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@5.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-5.0
+          packages:
+            - clang-5.0
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@6.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - llvm-toolchain-trusty-6.0
+            - ubuntu-toolchain-r-test
+          packages:
+            - clang-6.0
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - native gcc
+      addons:
+        apt:
+          update: true
+          packages:
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL=""
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@4.9
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-4.9
+            - libopenmpi-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@5.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-5
+            - libopenmpi-dev
+      env:
+         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@6.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-6
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@7.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-7
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@8.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - g++-8
+            - libopenmpi-dev
+      env:
+        - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
 before_install:
-  # OSX Setup
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update                  ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew cask uninstall oclint   ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install open-mpi        ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install ninja           ; fi
+  - eval "${MATRIX_EVAL}"
 
-script:
+before_script:
   - mkdir build
   - cd build
-  - cmake .. -G "Ninja"
+  - cmake .. -DCMAKE_BUILD_TYPE="Debug"
+
+script:
   - cmake --build . --target install
