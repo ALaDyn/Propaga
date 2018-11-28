@@ -7,19 +7,19 @@ matrix:
       compiler: gcc
       name: macOS - gcc@5
       env:
-        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install gcc@5 open-mpi && brew upgrade cmake && CC=gcc-5 && CXX=g++-5"
+        - MATRIX_EVAL="brew update && brew install gcc@5 open-mpi && brew upgrade cmake && CC=gcc-5 && CXX=g++-5"
 
     - os: osx
       compiler: gcc
       name: macOS - native gcc (llvm backend)
       env:
-        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install open-mpi && brew upgrade cmake"
+        - MATRIX_EVAL="brew update && brew install open-mpi && brew upgrade cmake"
 
     - os: osx
       compiler: clang
       name: macOS - native clang
       env:
-        - MATRIX_EVAL="brew update && brew cask uninstall oclint && brew install open-mpi && brew upgrade cmake"
+        - MATRIX_EVAL="brew update && brew install open-mpi && brew upgrade cmake"
 
     - os: linux
       compiler: clang
