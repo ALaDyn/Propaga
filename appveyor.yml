@@ -23,7 +23,7 @@ install:
   - mkdir cygwin-downloads
   - ps: if($env:COMPILER -eq "cygwin") { Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile $env:WORKSPACE\cygwin-setup.exe }
   - if [%COMPILER%]==[cygwin] %WORKSPACE%\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --root C:\cygwin64 --local-package-dir %WORKSPACE%\cygwin-downloads --packages gcc-g++,libopenmpi-devel,cmake,ninja,zlib-devel
-  - ps: if($env:COMPILER -eq "vs") { Invoke-WebRequest https://download.microsoft.com/download/2/E/C/2EC96D7F-687B-4613-80F6-E10F670A2D97/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe }
+  - ps: if($env:COMPILER -eq "vs") { Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe }
   - if [%COMPILER%]==[vs] %WORKSPACE%\msmpi.exe -unattend
   - git clone https://github.com/Microsoft/vcpkg
   - cd vcpkg
