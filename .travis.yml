@@ -41,49 +41,6 @@ matrix:
 
     - os: linux
       dist: xenial
-      compiler: clang
-      name: ubuntu - clang@5.0
-      addons:
-        apt:
-          update: true
-          sources:
-            - llvm-toolchain-trusty-5.0
-          packages:
-            - clang-5.0
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
-
-    - os: linux
-      dist: xenial
-      compiler: clang
-      name: ubuntu - clang@6.0
-      addons:
-        apt:
-          update: true
-          sources:
-            - llvm-toolchain-trusty-6.0
-            - ubuntu-toolchain-r-test
-          packages:
-            - clang-6.0
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
-
-    - os: linux
-      dist: xenial
-      compiler: gcc
-      name: ubuntu - native gcc
-      addons:
-        apt:
-          update: true
-          packages:
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL=""
-
-    - os: linux
-      dist: xenial
       compiler: gcc
       name: ubuntu - gcc@6.0
       addons:

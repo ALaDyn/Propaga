@@ -5,10 +5,10 @@ configuration: Release
 environment:
     WORKSPACE: C:\projects
     matrix:
-    - platform: Cygwin64
-      COMPILER: cygwin
-      CYGWIN_NOWINPATH: yes
-      CYGSH: C:\cygwin64\bin\bash -c
+    #- platform: Cygwin64
+    #  COMPILER: cygwin
+    #  CYGWIN_NOWINPATH: yes
+    #  CYGSH: C:\cygwin64\bin\bash -c
     - platform: Win32
       COMPILER: vs
 
