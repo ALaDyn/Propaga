@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env pwsh
 
 if [[ "$OSTYPE" == "darwin"* && "$1" == "gcc" ]]; then
   export CC="/usr/local/bin/gcc-8"
@@ -7,7 +7,6 @@ fi
 
 mkdir -p build
 cd build
-cmake ..
-#cmake .. -G "Ninja"
+cmake -G "Ninja" "-DCMAKE_TOOLCHAIN_FILE=${WORKSPACE}/vcpkg/scripts/buildsystems/vcpkg.cmake" ..
 cmake --build . --target install
 cd ..

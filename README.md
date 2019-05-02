@@ -3,17 +3,18 @@
 
 ![Propaga Logo](https://raw.githubusercontent.com/ALaDyn/Propaga/master/logo.png)
 
-Copyright 2010-2017 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
+Copyright 2010-2019 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti  
 *Uses [jsoncons library](https://github.com/danielaparker/jsoncons)*
 
 `Propaga` is a C++ code developed by the Physics of Complex System group, inside the Physics and Astronomy Department at the Bologna University, to study the three dimensional propagation of a particle bunch along a transfer line, composed by many different lattice elements.  
 If you want to use it, you're kindly requested to inform the authors and cite this Zenodo DOI:
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.595776.svg)](http://dx.doi.org/10.5281/zenodo.595776)
 
-CMake 3.2, MPI libraries and a C++11-compatible compiler are required.  
-On Windows, use [vcpkg](https://github.com/Microsoft/vcpkg/) to install libraries and [chocolatey](https://github.com/chocolatey/choco) to install tools for best results.  
-On Mac, use [homebrew](https://github.com/Homebrew/brew) to install libraries and tools for best results.  
-On Linux, please use your package manager (yum, dnf, apt, ...) to install libraries and tools.
+CMake 3.2, `jsoncons`, MPI libraries and a C++11-compatible compiler are required.  
+To install `jsoncons`, the best cross-compatible way is to use [vcpkg](https://github.com/Microsoft/vcpkg/).  
+On Windows, use `vcpkg` to install also other libraries and [chocolatey](https://github.com/chocolatey/choco) to install tools for best results.  
+On Mac, use [homebrew](https://github.com/Homebrew/brew) to install other libraries and tools for best results.  
+On Linux, please use your package manager (yum, dnf, apt, ...) to install other libraries and tools.
 
 In order to work, beside the executable, you should have at least two other important files: a json parameter file (default: input.json) and a phase-space distribution particle file (default test.initialbunch.ppg). Of course these default names can be varied. You should launch `Propaga` with this command line:
 

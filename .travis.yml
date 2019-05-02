@@ -1,14 +1,11 @@
 language: cpp
+cache:
+  timeout: 1000
+  directories:
+    - $HOME/vcpkg
 
 matrix:
   include:
-### since macOS homebrew's open-mpi is built against clang, it is necessary to use it or gcc@5 (ABI compatible with Apple-clang)
-    - os: osx
-      compiler: gcc
-      name: macOS - gcc@5
-      env:
-        - MATRIX_EVAL="brew update && brew install gcc@5 open-mpi && brew upgrade cmake && CC=gcc-5 && CXX=g++-5"
-
     - os: osx
       compiler: gcc
       name: macOS - native gcc (llvm backend)
@@ -186,11 +183,20 @@ matrix:
 
 before_install:
   - eval "${MATRIX_EVAL}"
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3-Linux-x86_64.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then tar -xzf cmake-3.14.3-Linux-x86_64.tar.gz ; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then export PATH=$PWD/cmake-3.14.3-Linux-x86_64/bin:$PATH ; fi
+  - pushd $HOME
+  - if [ -d "$HOME/vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
+  - cd vcpkg
+  - git pull
+  - ./bootstrap-vcpkg.sh
+  - travis_wait ./vcpkg install jsoncons
 
 before_script:
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE="Debug"
+  - cmake .. -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 script:
   - cmake --build . --target install
