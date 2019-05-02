@@ -1,4 +1,4 @@
-#!/usr/bin/env pwsh
+#!/usr/bin/env bash
 
 if [[ "$OSTYPE" == "darwin"* && "$1" == "gcc" ]]; then
   export CC="/usr/local/bin/gcc-8"

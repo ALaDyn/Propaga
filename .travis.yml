@@ -7,18 +7,13 @@ cache:
 matrix:
   include:
     - os: osx
-      compiler: gcc
-      name: macOS - native gcc (llvm backend)
+      osx_image: xcode10.1
+      name: macOS
       env:
-        - MATRIX_EVAL="brew update && brew install open-mpi && brew upgrade cmake"
-
-    - os: osx
-      compiler: clang
-      name: macOS - native clang
-      env:
-        - MATRIX_EVAL="brew update && brew install open-mpi && brew upgrade cmake"
+        - MATRIX_EVAL="brew update && brew install open-mpi gcc && brew upgrade cmake && unset CC && unset CXX"
 
     - os: linux
+      dist: xenial
       compiler: clang
       name: ubuntu - native clang
       addons:
@@ -30,34 +25,7 @@ matrix:
         - MATRIX_EVAL=""
 
     - os: linux
-      compiler: clang
-      name: ubuntu - clang@3.8
-      addons:
-        apt:
-          update: true
-          sources:
-            - llvm-toolchain-precise-3.8
-          packages:
-            - clang-3.8
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL="CC=clang-3.8 && CXX=clang++-3.8"
-
-    - os: linux
-      compiler: clang
-      name: ubuntu - clang@3.9
-      addons:
-        apt:
-          update: true
-          sources:
-            - llvm-toolchain-trusty-3.9
-          packages:
-            - clang-3.9
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL="CC=clang-3.9 && CXX=clang++-3.9"
-
-    - os: linux
+      dist: xenial
       compiler: clang
       name: ubuntu - clang@4.0
       addons:
@@ -72,6 +40,7 @@ matrix:
         - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
 
     - os: linux
+      dist: xenial
       compiler: clang
       name: ubuntu - clang@5.0
       addons:
@@ -86,6 +55,7 @@ matrix:
         - MATRIX_EVAL="CC=clang-5.0 && CXX=clang++-5.0"
 
     - os: linux
+      dist: xenial
       compiler: clang
       name: ubuntu - clang@6.0
       addons:
@@ -101,6 +71,7 @@ matrix:
         - MATRIX_EVAL="CC=clang-6.0 && CXX=clang++-6.0"
 
     - os: linux
+      dist: xenial
       compiler: gcc
       name: ubuntu - native gcc
       addons:
@@ -112,34 +83,7 @@ matrix:
         - MATRIX_EVAL=""
 
     - os: linux
-      compiler: gcc
-      name: ubuntu - gcc@4.9
-      addons:
-        apt:
-          update: true
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-4.9
-            - libopenmpi-dev
-      env:
-         - MATRIX_EVAL="CC=gcc-4.9 && CXX=g++-4.9"
-
-    - os: linux
-      compiler: gcc
-      name: ubuntu - gcc@5.0
-      addons:
-        apt:
-          update: true
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-5
-            - libopenmpi-dev
-      env:
-         - MATRIX_EVAL="CC=gcc-5 && CXX=g++-5"
-
-    - os: linux
+      dist: xenial
       compiler: gcc
       name: ubuntu - gcc@6.0
       addons:
@@ -154,6 +98,7 @@ matrix:
         - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
 
     - os: linux
+      dist: xenial
       compiler: gcc
       name: ubuntu - gcc@7.0
       addons:
@@ -168,6 +113,7 @@ matrix:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
     - os: linux
+      dist: xenial
       compiler: gcc
       name: ubuntu - gcc@8.0
       addons:
@@ -192,6 +138,7 @@ before_install:
   - git pull
   - ./bootstrap-vcpkg.sh
   - travis_wait ./vcpkg install jsoncons
+  - popd
 
 before_script:
   - mkdir build

@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/usr/bin/env pwsh
 
 Remove-Item .\build -Force -Recurse
 New-Item .\build -itemtype directory -Force
