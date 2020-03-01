@@ -115,7 +115,7 @@ void Parameters::open_dist_file() {
 void Parameters::write_run_parameters() {
   if (!restart) {
     log_file << "Units:" << std::endl;
-    log_file << "C = " << C << " (speed of light, cm/s)" << std::endl;
+    log_file << "C = " << SPEED_LIGHT << " (speed of light, cm/s)" << std::endl;
     log_file << "ME = " << ME_G << " (electron mass, g)" << std::endl;
     log_file << "MP_G = " << MP_G << " (proton mass, g)" << std::endl;
     log_file << "MP_MEV = " << MP_MEV << " (proton mass, MeV/c^2)" << std::endl;
@@ -132,45 +132,45 @@ void Parameters::write_run_parameters() {
 
 void Parameters::parse_json_file() {
   try {
-    parameters = jsoncons::json::parse_file(input_parameters_filename);
+    parameters = jsoncons::json::parse(input_parameters_filename);
   }
   catch (std::exception &e) {
     log_file << e.what() << std::endl;
   }
   jsoncons::json empty_json;
-  jsoncons::json json_lattice_elements = parameters.has_member("Magnetic_elements") ? parameters["Magnetic_elements"] : empty_json;
+  jsoncons::json json_lattice_elements = parameters.contains("Magnetic_elements") ? parameters["Magnetic_elements"] : empty_json;
 
-  input_dist_filename = parameters.has_member("input_distribution") ? parameters["input_distribution"].as<std::string>() : "test.initialbunch.ppg";
+  input_dist_filename = parameters.contains("input_distribution") ? parameters["input_distribution"].as<std::string>() : "test.initialbunch.ppg";
   if (MPI_Rank == 0) log_file << "Input file distribution: " << input_dist_filename << std::endl;
 
-  restart_step = parameters.has_member("restart_step") ? parameters["restart_step"].as<int>() : 0;
+  restart_step = parameters.contains("restart_step") ? parameters["restart_step"].as<int>() : 0;
   if (MPI_Rank == 0 && restart_step) restart = true, log_file << "Restarting from step " << restart_step << std::endl;
 
-  lattice->override_ordinal = parameters.has_member("override_ordinal") ? parameters["override_ordinal"].as<bool>() : false;
+  lattice->override_ordinal = parameters.contains("override_ordinal") ? parameters["override_ordinal"].as<bool>() : false;
   if (MPI_Rank == 0 && lattice->override_ordinal) log_file << "Overriding ordinal number (if present) in input distribution" << std::endl;
 
-  run_name = parameters.has_member("run_name") ? parameters["run_name"].as<std::string>() : "test";
+  run_name = parameters.contains("run_name") ? parameters["run_name"].as<std::string>() : "test";
   if (MPI_Rank == 0) log_file << "Run name: " << run_name << std::endl;
 
-  enable_reference_particle = parameters.has_member("enable_reference_particle") ? parameters["enable_reference_particle"].as<bool>() : false;
+  enable_reference_particle = parameters.contains("enable_reference_particle") ? parameters["enable_reference_particle"].as<bool>() : false;
   if (MPI_Rank == 0 && enable_reference_particle) log_file << "The last particle in the distribution is being considered as the reference particle" << std::endl;
 
-  ntrack = parameters.has_member("track_particle_below_id") ? parameters["track_particle_below_id"].as<int>() : 0;
+  ntrack = parameters.contains("track_particle_below_id") ? parameters["track_particle_below_id"].as<int>() : 0;
   if (MPI_Rank == 0) if (ntrack < 1) log_file << "Wrong ntrack from commandline, reset to 0" << std::endl;
   if (ntrack < 1) ntrack = 0;
   if (MPI_Rank == 0 && ntrack) log_file << "Tracking all the particles below id #" << ntrack << std::endl;
 
-  step_to_be_dumped = parameters.has_member("step_to_be_dumped") ? parameters["step_to_be_dumped"].as<int>() : -1;
+  step_to_be_dumped = parameters.contains("step_to_be_dumped") ? parameters["step_to_be_dumped"].as<int>() : -1;
   if (MPI_Rank == 0 && step_to_be_dumped > 0) log_file << "Will dump distribution at step " << step_to_be_dumped << std::endl;
 
-  z_dump = parameters.has_member("dump_at_position") ? parameters["dump_at_position"].as<double>() : -1.0;
+  z_dump = parameters.contains("dump_at_position") ? parameters["dump_at_position"].as<double>() : -1.0;
   if (MPI_Rank == 0 && z_dump > 0) log_file << "Will dump distribution at z = " << z_dump << std::endl;
 
-  eMin_json = parameters.has_member("emin") ? parameters["emin"].as<double>() : -1.0;
-  eMax_json = parameters.has_member("emax") ? parameters["emax"].as<double>() : -1.0;
-  dt = parameters.has_member("dt") ? parameters["dt"].as<double>() : 0.1;
-  big_coutta = parameters.has_member("steps_between_dumps") ? parameters["steps_between_dumps"].as<int>() : 0;
-  diag_coutta = parameters.has_member("steps_between_diags") ? parameters["steps_between_diags"].as<int>() : 50;
+  eMin_json = parameters.contains("emin") ? parameters["emin"].as<double>() : -1.0;
+  eMax_json = parameters.contains("emax") ? parameters["emax"].as<double>() : -1.0;
+  dt = parameters.contains("dt") ? parameters["dt"].as<double>() : 0.1;
+  big_coutta = parameters.contains("steps_between_dumps") ? parameters["steps_between_dumps"].as<int>() : 0;
+  diag_coutta = parameters.contains("steps_between_diags") ? parameters["steps_between_diags"].as<int>() : 50;
 
   if (eMin_json < 0.0) eMin_json = 0.0;
   if (eMax_json < 0.0) eMax_json = 1.0e+100;
@@ -183,19 +183,19 @@ void Parameters::parse_json_file() {
     log_file << "diags every " << diag_coutta << " steps" << std::endl;
   }
 
-  for (auto it = json_lattice_elements.begin_elements(); it != json_lattice_elements.end_elements(); ++it) {
+  for (auto it = json_lattice_elements.array_range().begin(); it != json_lattice_elements.array_range().end(); ++it) {
     LElement new_element;
     jsoncons::json& json_lattice_element = *it;
 
-    new_element.type = json_lattice_element.has_member("type") ? json_lattice_element["type"].as<char>() : 'O';
-    new_element.begin = json_lattice_element.has_member("begin") ? json_lattice_element["begin"].as<double>() : 0.0;
-    new_element.end = json_lattice_element.has_member("end") ? json_lattice_element["end"].as<double>() : 0.0;
-    new_element.par_01 = json_lattice_element.has_member("par_01") ? json_lattice_element["par_01"].as<double>() : 0.0;
-    new_element.par_02 = json_lattice_element.has_member("par_02") ? json_lattice_element["par_02"].as<double>() : 0.0;
-    new_element.par_03 = json_lattice_element.has_member("par_03") ? json_lattice_element["par_03"].as<double>() : 0.0;
-    new_element.par_04 = json_lattice_element.has_member("par_04") ? json_lattice_element["par_04"].as<double>() : 0.0;
+    new_element.type = json_lattice_element.contains("type") ? json_lattice_element["type"].as<char>() : 'O';
+    new_element.begin = json_lattice_element.contains("begin") ? json_lattice_element["begin"].as<double>() : 0.0;
+    new_element.end = json_lattice_element.contains("end") ? json_lattice_element["end"].as<double>() : 0.0;
+    new_element.par_01 = json_lattice_element.contains("par_01") ? json_lattice_element["par_01"].as<double>() : 0.0;
+    new_element.par_02 = json_lattice_element.contains("par_02") ? json_lattice_element["par_02"].as<double>() : 0.0;
+    new_element.par_03 = json_lattice_element.contains("par_03") ? json_lattice_element["par_03"].as<double>() : 0.0;
+    new_element.par_04 = json_lattice_element.contains("par_04") ? json_lattice_element["par_04"].as<double>() : 0.0;
     lattice_elements.push_back(new_element);
-    log_file << "ELEMENT: " << new_element.type << ", start: " << new_element.begin << ", end: " << new_element.end << ", par: [" 
+    log_file << "ELEMENT: " << new_element.type << ", start: " << new_element.begin << ", end: " << new_element.end << ", par: ["
       << new_element.par_01 << ',' << new_element.par_02 << ',' << new_element.par_03 << ',' << new_element.par_04 << ',' << "]" << std::endl;
   }
 

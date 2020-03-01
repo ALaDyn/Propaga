@@ -78,7 +78,7 @@ void SpaceCharge::field(double *Xvec, double *Param, double *t, double *Phi, dou
   double chi;
   double ch = particellaInteragente->get_charge();
 
-  double omega = (1.0) / (mp*C*C);
+  double omega = (1.0) / (mp*SPEED_LIGHT*SPEED_LIGHT);
 
   int nparticelle = (int)Param[0];
 
@@ -145,7 +145,7 @@ void Solenoid::field(double *Xvec, double *Param, double *t, double *Phi, int In
     double mp = particle->get_mass();
     double ch = particle->get_charge();
 
-    double omega0 = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*C*C); // in cm^-1
+    double omega0 = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*SPEED_LIGHT*SPEED_LIGHT); // in cm^-1
 
     Phi[3] += omega0*Phi[1];
     Phi[4] += -omega0*Phi[0];
@@ -170,7 +170,7 @@ void Focusing::field(double *Xvec, double *Param, double *t, double *Phi, int In
     double mp = particle->get_mass();
     double ch = particle->get_charge();
 
-    double omega1 = ch*(Param[2] * FROM_TESLA_TO_GAUSS*1e-2) / (mp*C*C); // in cm^-2 (il 10^-2 converte da metri^-1 a cm^-1, perche' il campo e' in T/m!!)
+    double omega1 = ch*(Param[2] * FROM_TESLA_TO_GAUSS*1e-2) / (mp*SPEED_LIGHT*SPEED_LIGHT); // in cm^-2 (il 10^-2 converte da metri^-1 a cm^-1, perche' il campo e' in T/m!!)
 
     Phi[3] += omega1*(-Phi[2] * Xvec[0]);
     Phi[4] += omega1*(Phi[2] * Xvec[1]);
@@ -195,7 +195,7 @@ void Defocusing::field(double *Xvec, double *Param, double *t, double *Phi, int 
     double mp = particle->get_mass();
     double ch = particle->get_charge();
 
-    double omega1 = -ch*(Param[2] * FROM_TESLA_TO_GAUSS*1e-2) / (mp*C*C); // in cm^-2 (il 10^-2 converte da metri^-1 a cm^-1, perche' il campo e' in T/m!!)
+    double omega1 = -ch*(Param[2] * FROM_TESLA_TO_GAUSS*1e-2) / (mp*SPEED_LIGHT*SPEED_LIGHT); // in cm^-2 (il 10^-2 converte da metri^-1 a cm^-1, perche' il campo e' in T/m!!)
 
     Phi[3] += omega1*(-Phi[2] * Xvec[0]);
     Phi[4] += omega1*(Phi[2] * Xvec[1]);
@@ -348,8 +348,8 @@ void Solenoid_FF::field(double *Xvec, double *Param, double *t, double *Phi, int
   double mp = particle->get_mass();
   double ch = particle->get_charge();
 
-  double omega = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*C*C*2.0);
-  double omega0 = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*C*C); // in cm^-1
+  double omega = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*SPEED_LIGHT*SPEED_LIGHT*2.0);
+  double omega0 = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*SPEED_LIGHT*SPEED_LIGHT); // in cm^-1
 
   double posizione_z_attuale = Xvec[2 + 5 * phase_space_size];
   double posizione_z_precedente = Xvec[2 + 4 * phase_space_size];
@@ -425,7 +425,7 @@ void Solenoid_SMOOTH::field(double *Xvec, double *Param, double *t, double *Phi,
     double Df = f[0] - f[1];
     double Df1 = f1[0] - f1[1];
 
-    double Sol = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*C*C); // in cm^-1
+    double Sol = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*SPEED_LIGHT*SPEED_LIGHT); // in cm^-1
 
     Phi[3] += Sol*(Phi[1] * Df + 0.5*Xvec[1] * Phi[2] * Df1);
     Phi[4] += -Sol*(Phi[0] * Df + 0.5*Xvec[0] * Phi[2] * Df1);
@@ -456,7 +456,7 @@ void Chicane_PRE::field(double *Xvec, double *Param, double *t, double *Phi, int
     double mp = particle->get_mass();
     double ch = particle->get_charge();
 
-    double omega1 = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*C*C);
+    double omega1 = ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*SPEED_LIGHT*SPEED_LIGHT);
 
     Phi[3] += -omega1*Phi[2];
     Phi[4] += 0.;
@@ -480,7 +480,7 @@ void Chicane_POST::field(double *Xvec, double *Param, double *t, double *Phi, in
   if (Xvec[2] >= inizio && Xvec[2] <= fine) {
     double mp = particle->get_mass();
     double ch = particle->get_charge();
-    double omega1 = -ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*C*C);
+    double omega1 = -ch*(Param[2] * FROM_TESLA_TO_GAUSS) / (mp*SPEED_LIGHT*SPEED_LIGHT);
 
     Phi[3] += -omega1*Phi[2];  // non cambio segno perche' e' gia' cambiato in omega1!
     Phi[4] += 0.;
@@ -535,7 +535,7 @@ void Chicane_SELECT_New::field(double *Xvec, double *Param, double *t, double *P
 
   if (posizione_z_precedente >= inizio && posizione_z_attuale <= fine) {
     // posizione_x_interpolata = posizione_x_precedente + (posizione_x_attuale - posizione_x_precedente) / (posizione_z_attuale - posizione_z_precedente) * (inizio - posizione_z_precedente);
-    // posizione_x_interpolata = ((inizio - posizione_z_precedente) / (posizione_z_attuale - posizione_z_precedente)) * posizione_x_attuale - ((inizio - posizione_z_attuale) / (posizione_z_attuale - posizione_z_precedente)) * posizione_x_precedente; 
+    // posizione_x_interpolata = ((inizio - posizione_z_precedente) / (posizione_z_attuale - posizione_z_precedente)) * posizione_x_attuale - ((inizio - posizione_z_attuale) / (posizione_z_attuale - posizione_z_precedente)) * posizione_x_precedente;
 
     if (posizione_x_attuale > (Param[2] + Param[3]) || posizione_x_attuale < (Param[2] - Param[3])) particle[Index].absorbe();
   }
@@ -566,7 +566,7 @@ void RF_Cavity::field(double *Xvec, double *Param, double *t, double *Phi, int I
     double phi0 = Param[6] * 2.0*M_PI / 360.0;
     double time = *t;
     double w = 2.0*M_PI*Param[2] * 1.0E6;   // * 1.E6 serve per convertire i MHz dell'input file in Hz
-    double alpha = ch / (mp*C*C);
+    double alpha = ch / (mp*SPEED_LIGHT*SPEED_LIGHT);
 
     Phi[3] += 0.;
     Phi[4] += 0.;
@@ -594,7 +594,7 @@ void RF_Cavity_tm_astra::field(double *Xvec, double *Param, double *t, double *P
     double phi0 = Param[6] * 2.0*M_PI / 360.0;
     double time = *t;
     double w = 2.0*M_PI*Param[2] * 1.0E6;   // * 1.E6 serve per convertire i MHz dell'input file in Hz
-    double alpha = ch / (mp*C*C);
+    double alpha = ch / (mp*SPEED_LIGHT*SPEED_LIGHT);
 
     double Ez0 = campomax *           cos(k*Xvec[2]);
     double d1Ez0 = campomax * (-k)    * sin(k*Xvec[2]);
@@ -606,10 +606,8 @@ void RF_Cavity_tm_astra::field(double *Xvec, double *Param, double *t, double *P
     double r3 = pow(r2, 1.5);
     double theta = atan2(Xvec[1], Xvec[0]);
 
-    Phi[3] += alpha * (0.5*r*Ez0 - r3 / 16.0*(d2Ez0 + (w*w) / (C*C)*Ez0)) * w / (C*C) * cos(w*time - phi0) * cos(theta);
-    Phi[4] += alpha * (0.5*r*Ez0 - r3 / 16.0*(d2Ez0 + (w*w) / (C*C)*Ez0)) * w / (C*C) * cos(w*time - phi0) * sin(theta);
-    Phi[5] += alpha * (Ez0 - r2 / 4.0 * (d2Ez0 + (w*w) / (C*C) * Ez0)) * sin(w*time - phi0);
+    Phi[3] += alpha * (0.5*r*Ez0 - r3 / 16.0*(d2Ez0 + (w*w) / (SPEED_LIGHT*SPEED_LIGHT)*Ez0)) * w / (SPEED_LIGHT*SPEED_LIGHT) * cos(w*time - phi0) * cos(theta);
+    Phi[4] += alpha * (0.5*r*Ez0 - r3 / 16.0*(d2Ez0 + (w*w) / (SPEED_LIGHT*SPEED_LIGHT)*Ez0)) * w / (SPEED_LIGHT*SPEED_LIGHT) * cos(w*time - phi0) * sin(theta);
+    Phi[5] += alpha * (Ez0 - r2 / 4.0 * (d2Ez0 + (w*w) / (SPEED_LIGHT*SPEED_LIGHT) * Ez0)) * sin(w*time - phi0);
   }
 }
-
-

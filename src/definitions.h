@@ -50,7 +50,7 @@
 #define _GNU_SOURCES
 #endif
 
-#define C                      2.99792458e+10         // speed of light [cm/s]
+#define SPEED_LIGHT            2.99792458e+10         // speed of light [cm/s]
 #define ME_G                   9.10938291E-28         // electron mass [g]
 #define MP_G                   1.6726231e-24          // proton mass [g]
 #define MP_KG                  1.6726231e-27          // proton mass [kg]
@@ -66,7 +66,7 @@
 #define KC                     1.0                    // Coulomb's constant
 //#define KC                   (1.0/(4*M_PI*E0))      // Coulomb's constant
 //#define KC                   0.07957747154          // Coulomb's constant
-//#define RP                   ( (1.0/(4*M_PI*E0)) * ((CHARGE*CHARGE)/(MP*C*C)) )  
+//#define RP                   ( (1.0/(4*M_PI*E0)) * ((CHARGE*CHARGE)/(MP*C*C)) )
 #define RP                     0.877551e-13           // classical proton radius (cm)
 
 /*********************************************************
@@ -134,4 +134,3 @@ So 1 statC = g^(1/2) * cm^(3/2) * s^(-1)
 #define gamma_rel(x)         (sqrt(1.0 + x[3]*x[3]+x[4]*x[4]+x[5]*x[5])) // x must be a gamma*beta
 
 #endif
-

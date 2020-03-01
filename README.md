@@ -1,4 +1,4 @@
-[![Build Status Master](https://travis-ci.org/ALaDyn/Propaga.png?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
+[![Build Status Master](https://travis-ci.com/ALaDyn/Propaga.svg?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
 [![Build status](https://ci.appveyor.com/api/projects/status/i2by6yapg60jl3my?svg=true)](https://ci.appveyor.com/project/cenit/propaga)
 
 ![Propaga Logo](https://raw.githubusercontent.com/ALaDyn/Propaga/master/logo.png)
@@ -10,7 +10,7 @@ Copyright 2010-2019 Stefano Sinigardi, Graziano Servizi, Giorgio Turchetti
 If you want to use it, you're kindly requested to inform the authors and cite this Zenodo DOI:
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.595776.svg)](http://dx.doi.org/10.5281/zenodo.595776)
 
-CMake 3.2, `jsoncons`, MPI libraries and a C++11-compatible compiler are required.  
+CMake 3.2+, `jsoncons`, MPI libraries and a C++11-compatible compiler are required.  
 To install `jsoncons`, the best cross-compatible way is to use [vcpkg](https://github.com/Microsoft/vcpkg/).  
 On Windows, use `vcpkg` to install also other libraries and [chocolatey](https://github.com/chocolatey/choco) to install tools for best results.  
 On Mac, use [homebrew](https://github.com/Homebrew/brew) to install other libraries and tools for best results.  

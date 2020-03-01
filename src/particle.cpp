@@ -179,14 +179,14 @@ double * Particle::get_phase_space() {
 /* in v[i] vengono memorizzate le velocita' delle particelle in cm / s */
 double Particle::get_speed_cm_s(int i) {
   double v, g = gamma_rel(xfase);
-  if (i > 2 && i < 6 && g > 0.0) v = xfase[i] * C / g;
+  if (i > 2 && i < 6 && g > 0.0) v = xfase[i] * SPEED_LIGHT / g;
   else v = 0.0;
   return v;
 }
 
 double Particle::get_energy_MeV() {
   double E, g = gamma_rel(xfase);
-  E = (FROM_ERG_TO_MEV)* (g - 1.0) * mass * C * C;        // nb: non usare la MP_MEV ma la MP (grammi)!!!!!
+  E = (FROM_ERG_TO_MEV)* (g - 1.0) * mass * SPEED_LIGHT * SPEED_LIGHT;        // nb: non usare la MP_MEV ma la MP (grammi)!!!!!
   return E;
 }
 
@@ -213,4 +213,3 @@ bool Particle::get_dumped_z() {
 void Particle::set_dumped_z(bool status_dumped) {
   dumped_z = status_dumped;
 }
-

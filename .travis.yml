@@ -13,49 +13,6 @@ matrix:
         - MATRIX_EVAL="brew update && brew install open-mpi gcc && brew upgrade cmake && unset CC && unset CXX"
 
     - os: linux
-      dist: xenial
-      compiler: clang
-      name: ubuntu - native clang
-      addons:
-        apt:
-          update: true
-          packages:
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL=""
-
-    - os: linux
-      dist: xenial
-      compiler: clang
-      name: ubuntu - clang@4.0
-      addons:
-        apt:
-          update: true
-          sources:
-            - llvm-toolchain-trusty-4.0
-          packages:
-            - clang-4.0
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL="CC=clang-4.0 && CXX=clang++-4.0"
-
-    - os: linux
-      dist: xenial
-      compiler: gcc
-      name: ubuntu - gcc@6.0
-      addons:
-        apt:
-          update: true
-          sources:
-            - ubuntu-toolchain-r-test
-          packages:
-            - g++-6
-            - libopenmpi-dev
-      env:
-        - MATRIX_EVAL="CC=gcc-6 && CXX=g++-6"
-
-    - os: linux
-      dist: xenial
       compiler: gcc
       name: ubuntu - gcc@7.0
       addons:
@@ -70,7 +27,6 @@ matrix:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
     - os: linux
-      dist: xenial
       compiler: gcc
       name: ubuntu - gcc@8.0
       addons:
