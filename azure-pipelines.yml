@@ -1,0 +1,123 @@
+
+trigger:
+- master
+
+jobs:
+  - job: 'Build_Ubuntu'
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+      - script: |
+          sudo -E apt-get update
+          sudo -E apt-get -yq --no-install-suggests --no-install-recommends install libopenmpi-dev
+        displayName: 'Install dependencies'
+      - script: |
+             if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
+             cd vcpkg
+             git checkout .
+             git pull
+             ./bootstrap-vcpkg.sh
+             echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake
+             ./vcpkg install jsoncons --recurse
+             rm -rf buildtrees
+             cd ..
+        displayName: vcpkg update
+      - script: |
+             mkdir build
+             cd build
+             cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+             cd ..
+        displayName: CMake configure
+      - script: |
+             cd build
+             cmake --build . --target install
+             cd ..
+        displayName: CMake build
+      - task: CopyFiles@2
+        inputs:
+          contents: '$(System.DefaultWorkingDirectory)/bin/**'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: Propaga-Ubuntu
+
+  - job: 'Build_macOS'
+    pool:
+      vmImage: 'macOS-latest'
+    steps:
+      - script: |
+          brew install open-mpi
+        displayName: 'Install dependencies'
+      - script: |
+             if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
+             cd vcpkg
+             git checkout .
+             git pull
+             ./bootstrap-vcpkg.sh
+             echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-osx.cmake
+             ./vcpkg install jsoncons --recurse
+             rm -rf buildtrees
+             cd ..
+        displayName: vcpkg update
+      - script: |
+             mkdir build
+             cd build
+             cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+             cd ..
+        displayName: CMake configure
+      - script: |
+             cd build
+             cmake --build . --target install
+             cd ..
+        displayName: CMake build
+      - task: CopyFiles@2
+        inputs:
+          contents: '$(System.DefaultWorkingDirectory)/bin/**'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: Propaga-macOS
+
+  - job: 'Build_Windows'
+    pool:
+      vmImage: 'windows-latest'
+    variables:
+      VCPKG_DEFAULT_TRIPLET: "x64-windows"
+      GIT_REDIRECT_STDERR: "2>&1"
+    steps:
+      - powershell: |
+          Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile msmpi.exe
+          .\msmpi.exe -unattend
+        displayName: Install dependencies
+      - powershell: |
+             if (Test-Path -LiteralPath ".\vcpkg\.git\") { Write-Host "vcpkg cached" } else { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue .\vcpkg; git clone https://github.com/Microsoft/vcpkg }
+             cd vcpkg
+             git checkout .
+             git pull
+             .\bootstrap-vcpkg.bat
+             echo "set(VCPKG_BUILD_TYPE release)" | out-file -encoding ascii -append "triplets\${env:VCPKG_DEFAULT_TRIPLET}.cmake"
+             .\vcpkg install jsoncons msmpi --recurse
+             Remove-Item -Recurse -Force -ErrorAction SilentlyContinue buildtrees
+             cd ..
+        displayName: vcpkg update
+      - powershell: |
+             mkdir build
+             cd build
+             cmake "-DCMAKE_TOOLCHAIN_FILE=..\vcpkg\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=${env:VCPKG_DEFAULT_TRIPLET}"   -DCMAKE_BUILD_TYPE="Release" ..
+             cd ..
+        displayName: CMake configure
+      - powershell: |
+             cd build
+             cmake --build . --config Release --target install
+             cd ..
+        displayName: CMake build
+      - task: CopyFiles@2
+        inputs:
+          contents: '$(System.DefaultWorkingDirectory)/bin/**'
+          targetFolder: $(Build.ArtifactStagingDirectory)
+      - task: PublishBuildArtifacts@1
+        inputs:
+          pathToPublish: $(Build.ArtifactStagingDirectory)
+          artifactName: Propaga-Windows
