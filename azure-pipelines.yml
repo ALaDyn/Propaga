@@ -56,7 +56,7 @@ jobs:
         displayName: 'Install dependencies'
       - task: Cache@2
         inputs:
-          key: 'ubuntu-vcpkg'
+          key: 'macos-vcpkg'
           path: vcpkg
         displayName: Cache vcpkg
       - script: |
@@ -103,7 +103,7 @@ jobs:
         displayName: Install dependencies
       - task: Cache@2
         inputs:
-          key: 'ubuntu-vcpkg'
+          key: 'windows-vcpkg'
           path: vcpkg
         displayName: Cache vcpkg
       - powershell: |
