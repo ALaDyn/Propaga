@@ -1,5 +1,6 @@
 [![Build Status Master](https://travis-ci.com/ALaDyn/Propaga.svg?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
 [![Build status](https://ci.appveyor.com/api/projects/status/i2by6yapg60jl3my?svg=true)](https://ci.appveyor.com/project/cenit/propaga)
+![Propaga Continuous Integration](https://github.com/ALaDyn/Propaga/workflows/Propaga%20Continuous%20Integration/badge.svg)
 
 ![Propaga Logo](https://raw.githubusercontent.com/ALaDyn/Propaga/master/logo.png)
 
