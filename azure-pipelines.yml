@@ -11,6 +11,11 @@ jobs:
           sudo -E apt-get update
           sudo -E apt-get -yq --no-install-suggests --no-install-recommends install libopenmpi-dev
         displayName: 'Install dependencies'
+      - task: Cache@2
+        inputs:
+          key: 'ubuntu-vcpkg'
+          path: vcpkg
+        displayName: Cache vcpkg
       - script: |
              if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
              cd vcpkg
@@ -49,6 +54,11 @@ jobs:
       - script: |
           brew install open-mpi
         displayName: 'Install dependencies'
+      - task: Cache@2
+        inputs:
+          key: 'ubuntu-vcpkg'
+          path: vcpkg
+        displayName: Cache vcpkg
       - script: |
              if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
              cd vcpkg
@@ -91,6 +101,11 @@ jobs:
           Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile msmpi.exe
           .\msmpi.exe -unattend
         displayName: Install dependencies
+      - task: Cache@2
+        inputs:
+          key: 'ubuntu-vcpkg'
+          path: vcpkg
+        displayName: Cache vcpkg
       - powershell: |
              if (Test-Path -LiteralPath ".\vcpkg\.git\") { Write-Host "vcpkg cached" } else { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue .\vcpkg; git clone https://github.com/Microsoft/vcpkg }
              cd vcpkg
