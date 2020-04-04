@@ -1,16 +1,10 @@
-name: C/C++ CI
+name: Propaga Continuous Integration
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
-  build:
-
-    runs-on: [ ubuntu-latest ]
-
+  linux-build:
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
     - name: Install dependencies
@@ -22,22 +16,114 @@ jobs:
         path: vcpkg
         key: ${{ runner.os }}-vcpkg
     - name: vcpkg update
-      run: if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi &&
-           cd vcpkg &&
-           git checkout . &&
-           git pull &&
-           ./bootstrap-vcpkg.sh &&
-           echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-osx.cmake &&
-           echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake &&
-           ./vcpkg install jsoncons --recurse &&
-           rm -rf buildtrees &&
+      run: |
+           if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
+           cd vcpkg
+           git checkout .
+           git pull
+           ./bootstrap-vcpkg.sh
+           echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake
+           ./vcpkg install jsoncons --recurse
+           rm -rf buildtrees
            cd ..
     - name: CMake configure
-      run: mkdir build &&
-           cd build &&
-           cmake .. -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake &&
+      run: |
+           mkdir build
+           cd build
+           cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
            cd ..
     - name: CMake build
-      run: cd build &&
-           cmake --build . --target install &&
+      run: |
+           cd build
+           cmake --build . --target install
            cd ..
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Propaga-${{ runner.os }}
+        path: bin
+
+  macos-build:
+    runs-on: macOS-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: brew install open-mpi
+    - name: Cache vcpkg
+      id: cache-vcpkg
+      uses: actions/cache@v1
+      with:
+        path: vcpkg
+        key: ${{ runner.os }}-vcpkg
+    - name: vcpkg update
+      run: |
+           if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
+           cd vcpkg
+           git checkout .
+           git pull
+           ./bootstrap-vcpkg.sh
+           echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-osx.cmake
+           ./vcpkg install jsoncons --recurse
+           rm -rf buildtrees
+           cd ..
+    - name: CMake configure
+      run: |
+           mkdir build
+           cd build
+           cmake -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake ..
+           cd ..
+    - name: CMake build
+      run: |
+           cd build
+           cmake --build . --target install
+           cd ..
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Propaga-${{ runner.os }}
+        path: bin
+
+  windows-build:
+    runs-on: windows-latest
+    env:
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      shell: pwsh
+      run: |
+        Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile msmpi.exe
+        .\msmpi.exe -unattend
+    - name: Cache vcpkg
+      id: cache-vcpkg
+      uses: actions/cache@v1
+      with:
+        path: vcpkg
+        key: ${{ runner.os }}-vcpkg
+    - name: vcpkg update
+      shell: pwsh
+      run: |
+           if (Test-Path -LiteralPath ".\vcpkg\.git\") { Write-Host "vcpkg cached" } else { Remove-Item -Recurse -Force -ErrorAction SilentlyContinue .\vcpkg ; git clone https://github.com/Microsoft/vcpkg }
+           cd vcpkg
+           git checkout .
+           git pull
+           .\bootstrap-vcpkg.bat
+           echo "set(VCPKG_BUILD_TYPE release)" | out-file -encoding ascii -append "triplets\${env:VCPKG_DEFAULT_TRIPLET}.cmake"
+           .\vcpkg install jsoncons msmpi --recurse
+           Remove-Item -Recurse -Force -ErrorAction SilentlyContinue buildtrees
+           cd ..
+    - name: CMake configure
+      shell: pwsh
+      run: |
+           mkdir build
+           cd build
+           cmake "-DCMAKE_TOOLCHAIN_FILE=..\vcpkg\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=${env:VCPKG_DEFAULT_TRIPLET}" -DCMAKE_BUILD_TYPE="Release" ..
+           cd ..
+    - name: CMake build
+      shell: pwsh
+      run: |
+           cd build
+           cmake --build . --config Release --target install
+           cd ..
+    - uses: actions/upload-artifact@v1
+      with:
+        name: Propaga-${{ runner.os }}
+        path: bin
