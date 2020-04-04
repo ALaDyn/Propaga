@@ -1,4 +1,4 @@
-[![Build Status Master](https://travis-ci.com/ALaDyn/Propaga.svg?branch=master)](https://travis-ci.org/ALaDyn/Propaga "master")
+[![Build Status](https://travis-ci.com/ALaDyn/Propaga.svg?branch=master)](https://travis-ci.com/ALaDyn/Propaga)
 [![Build status](https://ci.appveyor.com/api/projects/status/i2by6yapg60jl3my?svg=true)](https://ci.appveyor.com/project/cenit/propaga)
 ![Propaga Continuous Integration](https://github.com/ALaDyn/Propaga/workflows/Propaga%20Continuous%20Integration/badge.svg)
 [![Build Status](https://dev.azure.com/cenit/Propaga/_apis/build/status/ALaDyn.Propaga?branchName=master)](https://dev.azure.com/cenit/Propaga/_build/latest?definitionId=1&branchName=master)
