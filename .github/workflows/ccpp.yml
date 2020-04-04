@@ -1,0 +1,43 @@
+name: C/C++ CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: [ ubuntu-latest ]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install dependencies
+      run: sudo apt-get install libopenmpi-dev
+    - name: Cache vcpkg
+      id: cache-vcpkg
+      uses: actions/cache@v1
+      with:
+        path: vcpkg
+        key: ${{ runner.os }}-vcpkg
+    - name: vcpkg update
+      run: if [ -d "vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi &&
+           cd vcpkg &&
+           git checkout . &&
+           git pull &&
+           ./bootstrap-vcpkg.sh &&
+           echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-osx.cmake &&
+           echo "set(VCPKG_BUILD_TYPE release)" >> triplets/x64-linux.cmake &&
+           ./vcpkg install jsoncons --recurse &&
+           rm -rf buildtrees &&
+           cd ..
+    - name: CMake configure
+      run: mkdir build &&
+           cd build &&
+           cmake .. -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE=../vcpkg/scripts/buildsystems/vcpkg.cmake &&
+           cd ..
+    - name: CMake build
+      run: cd build &&
+           cmake --build . --target install &&
+           cd ..
