@@ -1,48 +1,40 @@
-image: Visual Studio 2017
 clone_folder: c:\projects\Propaga
-configuration: Release
-
+cache: C:\Tools\vcpkg\installed\
+image:
+  - Visual Studio 2019
 environment:
-    WORKSPACE: C:\projects
-    matrix:
-    #- platform: Cygwin64
-    #  COMPILER: cygwin
-    #  CYGWIN_NOWINPATH: yes
-    #  CYGSH: C:\cygwin64\bin\bash -c
-    - platform: Win32
-      COMPILER: vs
+  WORKSPACE: C:\projects
+  COMPILER_VERSION: 2019
+  COMPILER_VERSION_SHORT: 16
+  VCPKG_ROOT: C:\Tools\vcpkg
+  matrix:
+    - PLATFORM: Win32
+      ARCHITECTURE: x86
+      VCPKG_DEFAULT_TRIPLET: x86-windows
+    - PLATFORM: x64
+      ARCHITECTURE: x64
+      VCPKG_DEFAULT_TRIPLET: x64-windows
 
 install:
-  - if [%COMPILER%]==[vs] cinst cmake ninja
-  - if [%COMPILER%]==[vs] SET "PATH=C:\Program Files\CMake\bin;%PATH%"
-  - if [%COMPILER%]==[vs] call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat" x86
-  - if [%COMPILER%]==[cygwin] SET "PATH=C:\cygwin64\bin;C:\cygwin64\usr\bin;%PATH%"
-  - if [%COMPILER%]==[cygwin] SET PATH=%PATH:C:\Program Files\Git\usr\bin;=%
-  - git submodule -q update --init --recursive
+  - cinst cmake ninja
+  - SET "PATH=C:\Program Files\CMake\bin;%PATH%"
+  - call "C:\Program Files (x86)\Microsoft Visual Studio\%COMPILER_VERSION%\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCHITECTURE%
   - cd %WORKSPACE%
-  - mkdir cygwin-downloads
-  - ps: if($env:COMPILER -eq "cygwin") { Invoke-WebRequest https://cygwin.com/setup-x86_64.exe -OutFile $env:WORKSPACE\cygwin-setup.exe }
-  - if [%COMPILER%]==[cygwin] %WORKSPACE%\cygwin-setup.exe --quiet-mode --no-shortcuts --no-startmenu --no-desktop --upgrade-also --root C:\cygwin64 --local-package-dir %WORKSPACE%\cygwin-downloads --packages gcc-g++,libopenmpi-devel,cmake,ninja,zlib-devel,libncurses-devel
-  - ps: if($env:COMPILER -eq "cygwin") { Invoke-WebRequest https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3.tar.gz -OutFile $env:WORKSPACE\cmake-3.14.3.tar.gz }
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'tar zxvf cmake-3.14.3.tar.gz'
-  - if [%COMPILER%]==[cygwin] cd %WORKSPACE%\cmake-3.14.3
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake .'
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'make -j8'
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'make install'
-  - ps: if($env:COMPILER -eq "vs") { Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe }
-  - if [%COMPILER%]==[vs] %WORKSPACE%\msmpi.exe -unattend
-  - git clone https://github.com/Microsoft/vcpkg
-  - cd vcpkg
-  - if [%COMPILER%]==[vs] bootstrap-vcpkg.bat
-  - if [%COMPILER%]==[cygwin] bootstrap-vcpkg.sh -useSystemBinaries
-  - vcpkg install jsoncons
-  - if [%COMPILER%]==[vs] vcpkg install msmpi
+  - ps: Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe
+  - cmd /c "%WORKSPACE%\msmpi.exe -unattend"
+  - cd %VCPKG_ROOT%
+  - git checkout .
+  - git pull
+  - .\bootstrap-vcpkg.bat
+  - echo set(VCPKG_BUILD_TYPE release) >> triplets\%VCPKG_DEFAULT_TRIPLET%.cmake
+  - vcpkg upgrade --no-dry-run
+  - vcpkg install jsoncons --recurse
+  - vcpkg install msmpi --recurse
+  - rmdir "buildtrees" /S /Q
   - cd %WORKSPACE%\Propaga\
   - mkdir build
   - cd build
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake /cygdrive/c/projects/Propaga -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=/cygdrive/c/projects/vcpkg/scripts/buildsystems/vcpkg.cmake -DCMAKE_BUILD_TYPE="Debug"'
-  - if [%COMPILER%]==[vs]     cmake .. -G "Ninja" -DCMAKE_TOOLCHAIN_FILE=%WORKSPACE%\vcpkg\scripts\buildsystems\vcpkg.cmake -DCMAKE_BUILD_TYPE="Debug"
+  - cmake -G "Visual Studio %COMPILER_VERSION_SHORT% %COMPILER_VERSION%" -T "host=%ARCHITECTURE%" -A "%PLATFORM%" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Release" ..
 
 build_script:
-  - if [%COMPILER%]==[cygwin] %CYGSH% 'cmake --build . --target install'
-  - if [%COMPILER%]==[vs]     cmake --build . --target install
+  - cmake --build . --target install --config Release
