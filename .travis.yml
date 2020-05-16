@@ -7,7 +7,7 @@ cache:
 matrix:
   include:
     - os: osx
-      osx_image: xcode10.1
+      osx_image: xcode11.4
       name: macOS
       env:
         - MATRIX_EVAL="brew update && brew install open-mpi gcc && brew upgrade cmake && unset CC && unset CXX"
