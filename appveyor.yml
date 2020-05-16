@@ -34,7 +34,7 @@ install:
   - cd %WORKSPACE%\Propaga\
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio %COMPILER_VERSION_SHORT% %COMPILER_VERSION%" -T "host=%ARCHITECTURE%" -A "%PLATFORM%" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Release" ..
+  - cmake -G "Visual Studio %COMPILER_VERSION_SHORT% %COMPILER_VERSION%" -T "host=x64" -A "%PLATFORM%" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Release" ..
 
 build_script:
   - cmake --build . --target install --config Release
