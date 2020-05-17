@@ -28,7 +28,7 @@ install:
   - vcpkg upgrade --no-dry-run
   - vcpkg install jsoncons --recurse
   - vcpkg install msmpi --recurse
-  - rmdir "buildtrees" /S /Q
+  - IF exist buildtrees ( rmdir "buildtrees" /S /Q )
   - cd %WORKSPACE%\Propaga\
   - mkdir build
   - cd build
