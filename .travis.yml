@@ -9,8 +9,15 @@ matrix:
     - os: osx
       osx_image: xcode11.4
       name: macOS
+      addons:
+        homebrew:
+          packages:
+          - cmake
+          - open-mpi
+          - gcc
+          update: true
       env:
-        - MATRIX_EVAL="brew update && brew install open-mpi gcc && brew upgrade cmake && unset CC && unset CXX"
+        - MATRIX_EVAL="unset CC && unset CXX"
 
     - os: linux
       compiler: gcc
@@ -21,8 +28,11 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-7
             - libopenmpi-dev
+            - cmake
+            - gcc-7
+            - g++-7
+            - ninja-build
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
 
@@ -35,16 +45,68 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - g++-8
             - libopenmpi-dev
+            - cmake
+            - gcc-8
+            - g++-8
+            - ninja-build
       env:
         - MATRIX_EVAL="CC=gcc-8 && CXX=g++-8"
 
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@9.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libopenmpi-dev
+            - cmake
+            - gcc-9
+            - g++-9
+            - ninja-build
+      env:
+        - MATRIX_EVAL="CC=gcc-9 && CXX=g++-9"
+
+    - os: linux
+      compiler: gcc
+      name: ubuntu - gcc@10.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
+            - libopenmpi-dev
+            - cmake
+            - gcc-10
+            - g++-10
+            - ninja-build
+      env:
+        - MATRIX_EVAL="CC=gcc-10 && CXX=g++-10"
+
+    - os: linux
+      compiler: clang
+      name: ubuntu - clang@10.0
+      addons:
+        apt:
+          update: true
+          sources:
+            - sourceline: 'deb http://apt.llvm.org/bionic/ llvm-toolchain-bionic-10 main'
+              key_url: 'https://apt.llvm.org/llvm-snapshot.gpg.key'
+           packages:
+            - libopenmpi-dev
+            - cmake
+            - clang-10
+            - ninja-build
+      env:
+        - MATRIX_EVAL="CC=clang-10 && CXX=clang++-10"
+
+
 before_install:
   - eval "${MATRIX_EVAL}"
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then wget --no-check-certificate https://github.com/Kitware/CMake/releases/download/v3.14.3/cmake-3.14.3-Linux-x86_64.tar.gz ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then tar -xzf cmake-3.14.3-Linux-x86_64.tar.gz ; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]] ; then export PATH=$PWD/cmake-3.14.3-Linux-x86_64/bin:$PATH ; fi
   - pushd $HOME
   - if [ -d "$HOME/vcpkg/.git" ] ; then echo vcpkg cached ; else rm -rf vcpkg ; git clone https://github.com/Microsoft/vcpkg ; fi
   - cd vcpkg
@@ -56,7 +118,7 @@ before_install:
 before_script:
   - mkdir build
   - cd build
-  - cmake .. -DCMAKE_BUILD_TYPE="Debug" -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
+  - cmake .. -DCMAKE_BUILD_TYPE="Release" -DCMAKE_TOOLCHAIN_FILE=$HOME/vcpkg/scripts/buildsystems/vcpkg.cmake
 
 script:
   - cmake --build . --target install

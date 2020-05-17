@@ -1,0 +1,38 @@
+clone_folder: c:\projects\Propaga
+cache: C:\Tools\vcpkg\installed\
+image:
+  - Visual Studio 2019
+environment:
+  WORKSPACE: C:\projects
+  COMPILER_VERSION: 2019
+  COMPILER_VERSION_SHORT: 16
+  VCPKG_ROOT: C:\Tools\vcpkg
+  matrix:
+    - PLATFORM: Win32
+      VCPKG_DEFAULT_TRIPLET: x86-windows
+    - PLATFORM: x64
+      VCPKG_DEFAULT_TRIPLET: x64-windows
+
+install:
+  - choco install -y ninja
+  - choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+  - set "PATH=C:\Program Files\CMake\bin;%PATH%"
+  - cd %WORKSPACE%
+  - ps: Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe
+  - cmd /c "%WORKSPACE%\msmpi.exe -unattend"
+  - cd %VCPKG_ROOT%
+  - git checkout .
+  - git pull
+  - .\bootstrap-vcpkg.bat
+  - echo set(VCPKG_BUILD_TYPE release) >> triplets\%VCPKG_DEFAULT_TRIPLET%.cmake
+  - vcpkg upgrade --no-dry-run
+  - vcpkg install jsoncons --recurse
+  - vcpkg install msmpi --recurse
+  - rmdir "buildtrees" /S /Q
+  - cd %WORKSPACE%\Propaga\
+  - mkdir build
+  - cd build
+  - cmake -G "Visual Studio %COMPILER_VERSION_SHORT% %COMPILER_VERSION%" -A "%PLATFORM%" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Release" ..
+
+build_script:
+  - cmake --build . --target install --config Release
