@@ -16,6 +16,7 @@ environment:
 install:
   - choco install -y ninja
   - choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
+  - set "PATH=C:\Program Files\CMake\bin;%PATH%"
   - cd %WORKSPACE%
   - ps: Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe
   - cmd /c "%WORKSPACE%\msmpi.exe -unattend"
