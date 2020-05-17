@@ -9,16 +9,13 @@ environment:
   VCPKG_ROOT: C:\Tools\vcpkg
   matrix:
     - PLATFORM: Win32
-      ARCHITECTURE: x86
       VCPKG_DEFAULT_TRIPLET: x86-windows
     - PLATFORM: x64
-      ARCHITECTURE: x64
       VCPKG_DEFAULT_TRIPLET: x64-windows
 
 install:
-  - cinst cmake ninja
-  - SET "PATH=C:\Program Files\CMake\bin;%PATH%"
-  - call "C:\Program Files (x86)\Microsoft Visual Studio\%COMPILER_VERSION%\Community\VC\Auxiliary\Build\vcvarsall.bat" %ARCHITECTURE%
+  - choco install -y ninja
+  - choco install -y cmake --installargs 'ADD_CMAKE_TO_PATH=System'
   - cd %WORKSPACE%
   - ps: Invoke-WebRequest https://download.microsoft.com/download/A/E/0/AE002626-9D9D-448D-8197-1EA510E297CE/msmpisetup.exe -OutFile $env:WORKSPACE\msmpi.exe
   - cmd /c "%WORKSPACE%\msmpi.exe -unattend"
@@ -34,7 +31,7 @@ install:
   - cd %WORKSPACE%\Propaga\
   - mkdir build
   - cd build
-  - cmake -G "Visual Studio %COMPILER_VERSION_SHORT% %COMPILER_VERSION%" -T "host=x64" -A "%PLATFORM%" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Release" ..
+  - cmake -G "Visual Studio %COMPILER_VERSION_SHORT% %COMPILER_VERSION%" -A "%PLATFORM%" "-DCMAKE_TOOLCHAIN_FILE=%VCPKG_ROOT%\scripts\buildsystems\vcpkg.cmake" "-DVCPKG_TARGET_TRIPLET=%VCPKG_DEFAULT_TRIPLET%" -DCMAKE_BUILD_TYPE="Release" ..
 
 build_script:
   - cmake --build . --target install --config Release
