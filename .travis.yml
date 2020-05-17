@@ -17,7 +17,7 @@ matrix:
           - gcc
           update: true
       env:
-        - MATRIX_EVAL=""
+        - MATRIX_EVAL="unset CC && unset CXX"
 
     - os: linux
       compiler: gcc
